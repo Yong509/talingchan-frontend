@@ -1,11 +1,13 @@
+```bash
 .
 ├── components
 ├── pages
-│ ├── \_app.tsx // root page
-│ └── index.ts // index page (example)
-├── styles // css style
-├── public // assets (image, icons, ...)
-├── tsconfig.json // typescript config file
+│   ├── _app.tsx            // root page
+│   └── index.ts            // index page (example)
+├── styles                  // css style
+├── public                  // assets (image, icons, ...)
+├── tsconfig.json           // typescript config file
+```
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
