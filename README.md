@@ -1,3 +1,4 @@
+.
 ├── components
 ├── pages
 │ ├── \_app.tsx // root page
