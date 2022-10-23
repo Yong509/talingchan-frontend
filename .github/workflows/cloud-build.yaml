@@ -47,5 +47,3 @@ jobs:
             --region $CLOUD_RUN_REGION \
             --allow-unauthenticated \
             --quiet
-    options:
-      logging: CLOUD_LOGGING_ONLY
