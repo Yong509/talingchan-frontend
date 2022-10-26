@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { MouseEventHandler, useState } from "react";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
@@ -9,11 +9,16 @@ import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Toolbar, IconButton, Button, Drawer } from "@mui/material";
 
+interface buttonProps{
+  buttonTitle: string,
+  onClick: MouseEventHandler<HTMLDivElement>
+}
+
 interface appBarProps {
   id: string,
-  title?: string;
-  menu?: Array<string>;
-  window?: () => Window;
+  title?: string,
+  button?: Array<buttonProps>,
+  window?: () => Window
 }
 
 const drawerWidth = 240;
@@ -36,10 +41,10 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
       </Typography>
       <Divider />
       <List>
-        {props.menu?.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
+        {props.button?.map((item:buttonProps,index:number) => (
+          <ListItem key={item.buttonTitle} disablePadding>
+            <ListItemButton sx={{ textAlign: "center" }} onClick={item.onClick}>
+              <ListItemText primary={item.buttonTitle} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -73,10 +78,11 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
               {props.title ? props.title : 'Talingchan Fertilizer'}
             </Typography>
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              {props.menu?.map((item) => (
+              {props.button?.map((item:buttonProps,index:number) => (
                 <Button
-                    id={item}
-                  key={item}
+                  id={item.buttonTitle}
+                  key={item.buttonTitle}
+                  onClick={()=>{item.onClick}}
                   sx={{
                     color: "black",
                     "&:hover": {
@@ -84,7 +90,7 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
                     },
                   }}
                 >
-                  {item}
+                  {item.buttonTitle}
                 </Button>
               ))}
             </Box>
@@ -97,7 +103,7 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
+              keepMounted: true,
             }}
             sx={{
               display: { xs: "block", sm: "none" },

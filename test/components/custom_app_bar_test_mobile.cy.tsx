@@ -1,7 +1,6 @@
 import CustomAppBar from "components/common/custom_app_bar";
 
-describe('Custom App bar test mobile resolution', () => {
-    
+describe("Custom App bar test mobile resolution", () => {
   context("mobile resolution", () => {
     beforeEach(() => {
       cy.viewport("iphone-xr");
@@ -21,7 +20,14 @@ describe('Custom App bar test mobile resolution', () => {
 
     it("Should have menu props", () => {
       cy.mount(
-        <CustomAppBar id="HomeAppBar" menu={["Test1", "Test2", "Test3"]} />
+        <CustomAppBar
+          id="HomeAppBar"
+          button={[
+            { buttonTitle: "Test1", onClick: () => {} },
+            { buttonTitle: "Test2", onClick: () => {} },
+            { buttonTitle: "Test3", onClick: () => {} },
+          ]}
+        />
       );
       cy.get("[id = 'HomeAppBar']").should(
         "have.text",
@@ -29,13 +35,21 @@ describe('Custom App bar test mobile resolution', () => {
       );
     });
 
-    it("Menu should clickable", () => {
-        cy.mount(
-          <CustomAppBar id="HomeAppBar" menu={["Test1", "Test2", "Test3"]} />
-        );
-        cy.get('[data-testid="MenuIcon"]').click();
-      });
+    it("Menu and submenu should clickable", () => {
+      cy.mount(
+        <CustomAppBar
+          id="HomeAppBar"
+          button={[
+            { buttonTitle: "Test1", onClick: () => {console.log('click 1')} },
+            { buttonTitle: "Test2", onClick: () => {} },
+            { buttonTitle: "Test3", onClick: () => {} },
+          ]}
+        />
+      );
+      cy.get('[data-testid="MenuIcon"]').click();
+      cy.get('.MuiList-root > :nth-child(1) > .MuiButtonBase-root').click();  
+    });
 
-   
+
   });
 });

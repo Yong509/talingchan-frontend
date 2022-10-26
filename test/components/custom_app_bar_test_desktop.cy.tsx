@@ -20,7 +20,14 @@ describe("Custom app bar test", () => {
 
     it("Should have menu props", () => {
       cy.mount(
-        <CustomAppBar id="HomeAppBar" menu={["Test1", "Test2", "Test3"]} />
+        <CustomAppBar
+          id="HomeAppBar"
+          button={[
+            { buttonTitle: "Test1", onClick: () => {} },
+            { buttonTitle: "Test2", onClick: () => {} },
+            { buttonTitle: "Test3", onClick: () => {} },
+          ]}
+        />
       );
       cy.get("[id = 'HomeAppBar']").should(
         "have.text",
@@ -30,12 +37,18 @@ describe("Custom app bar test", () => {
 
     it("Menu should clickable", () => {
       cy.mount(
-        <CustomAppBar id="HomeAppBar" menu={["Test1", "Test2", "Test3"]} />
+        <CustomAppBar
+          id="HomeAppBar"
+          button={[
+            { buttonTitle: "Test1", onClick: () => {} },
+            { buttonTitle: "Test2", onClick: () => {} },
+            { buttonTitle: "Test3", onClick: () => {} },
+          ]}
+        />
       );
       cy.get("[id = 'Test1']").click();
       cy.get("[id = 'Test2']").click();
       cy.get("[id = 'Test3']").click();
     });
   });
-
 });
