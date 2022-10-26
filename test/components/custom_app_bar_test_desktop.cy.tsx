@@ -3,7 +3,7 @@ import CustomAppBar from "components/common/custom_app_bar";
 describe("Custom app bar test", () => {
   context("Desktop resolution", () => {
     beforeEach(() => {
-      cy.viewport(1280, 60);
+      cy.viewport(1280, 1080);
     });
     it("Should have default title", () => {
       cy.mount(<CustomAppBar id="HomeAppBar" />);
