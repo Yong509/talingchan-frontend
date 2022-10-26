@@ -1,12 +1,29 @@
 import type { NextPage } from "next";
 import CustomAppBar from "components/common/custom_app_bar";
-
+import SearchForm from "components/search/search_form";
+import TextField from '@mui/material/TextField';
+import { Box, Button } from "@mui/material";
 
 const Home: NextPage = () => {
   return (
-   <>
-     <CustomAppBar title="Talingchan Fertilizer"  button={[{ buttonTitle: "Test1", onClick: () => {} },{ buttonTitle: "Test2", onClick: () => {} },{ buttonTitle: "Test3", onClick: () => {} }]} id={"HomeAppBar"}/>
-   </>
+    <>
+    <div className="bg-background">
+      <div className="w-full">
+      <CustomAppBar
+        title="Talingchan Fertilizer"
+        button={[
+          { buttonTitle: "Receive", onClick: () => {} },
+          { buttonTitle: "Cart", onClick: () => {} },
+          { buttonTitle: "Login", onClick: () => {} },
+        ]}
+        id={"HomeAppBar"}
+      />
+      </div>
+      <div className="pt-44">
+        <SearchForm />
+      </div>
+      </div>
+    </>
   );
 };
 
