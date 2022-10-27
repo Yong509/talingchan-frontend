@@ -3,35 +3,21 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const SearchForm: React.FC = () => {
-  const [errorsInput, setErrorInput] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-    clearErrors 
+    clearErrors,
+    reset,
   } = useForm();
-
-  console.log(errors.search_input?.message?.toString());
-
-  const styles = {
-    textField: {
-      fontSize: 16,
-      "@media (min-width: 576px)": {
-        fontSize: 20,
-      },
-      "@media (min-width: 768px)": {
-        fontSize: 22,
-      },
-    },
-  };
 
   return (
     <>
       <form
         onSubmit={handleSubmit((e) => {
           console.log(e);
-            clearErrors
+          clearErrors;
         })}
       >
         <div className="w-full flex justify-center bg-black">
@@ -40,20 +26,23 @@ const SearchForm: React.FC = () => {
               id="serach-input"
               placeholder="Product"
               variant="outlined"
-          
               InputProps={{
                 sx: {
                   height: { xs: "33px", md: "55px" },
                   fontSize: { xs: "18px", md: "14px" },
                   width: { xs: "120px", md: "184px" },
-                  textAlign: "center"
+                  textAlign: "center",
                 },
               }}
               {...register("search_input", {
                 required: "Can not be empty",
               })}
+              onBlur={() => {
+                console.log("on blur");
+                clearErrors("search_input")
+              }}
               helperText={errors.search_input?.message?.toString()}
-            
+              error={errors.search_input?.message ? true : false}
             />
 
             <Button
@@ -81,3 +70,6 @@ const SearchForm: React.FC = () => {
 };
 
 export default SearchForm;
+function useRef(arg0: null) {
+  throw new Error("Function not implemented.");
+}
