@@ -14,6 +14,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import { ProductPayload } from "model/product_model";
 import { useState } from "react";
 
 interface quantityProps {
@@ -21,9 +22,10 @@ interface quantityProps {
   value: number;
 }
 
-const ProductCard: React.FC = () => {
+
+const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
   const [selectQuantity, setSelectQuantity] = useState<number>(0);
-  const price: number = 250;
+  
   const quntityArray: Array<quantityProps> = [
     { key: 1, value: 1 },
     { key: 2, value: 2 },
@@ -54,7 +56,7 @@ const ProductCard: React.FC = () => {
         <Card>
           <CardMedia
             component="img"
-            image="https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg"
+            image={props.picture}
             sx={{ height: "280px", objectFit: "contain" }}
           />
           <Divider sx={{ borderBottomWidth: 1 }} />
@@ -73,8 +75,7 @@ const ProductCard: React.FC = () => {
                 fontSize: "1.2rem",
               }}
             >
-              DR. EARTH ORGANIC AND NATURAL NATURAL WONDER® FRUIT TREE
-              FERTILIZER 5-5-2
+             {props.name}
             </Typography>
             <Typography
               variant="body2"
@@ -87,11 +88,7 @@ const ProductCard: React.FC = () => {
                 WebkitBoxOrient: "vertical",
               }}
             >
-              Natural Wonder® fertilizer is formulated to feed all fruit trees,
-              berries, and fruiting vines in containers or any backyard soils.
-              It can be used during the initial transplanting after digging the
-              hole or anytime of the year to feed actively growing fruit trees
-              and vines.
+            {props.description}
             </Typography>
             <Typography
               variant="body1"
@@ -102,7 +99,7 @@ const ProductCard: React.FC = () => {
                 fontWeight: "750",
               }}
             >
-              250 BAHT
+              {props.price} BAHT
             </Typography>
             <Typography
               variant="body2"
@@ -111,7 +108,7 @@ const ProductCard: React.FC = () => {
                 fontWeight: "750",
               }}
             >
-              In Stock: 3 Unit
+              In Stock: {props.quantity} Unit
             </Typography>
           </CardContent>
           <Divider sx={{ borderBottomWidth: 1 }} />
@@ -135,7 +132,7 @@ const ProductCard: React.FC = () => {
                   }}
                 >
                   <MenuItem value={""}>
-                    {" "}
+                    
                     <em>0</em>
                   </MenuItem>
                   {quntityArray.map((item, index) => {
@@ -156,7 +153,7 @@ const ProductCard: React.FC = () => {
                     fontWeight: "750",
                   }}
                 >
-                  TOTAL {price * selectQuantity} BAHT
+                  TOTAL {props.price * selectQuantity} BAHT
                 </Typography>
               </div>
               <div className="flex items-end place-content-end">
