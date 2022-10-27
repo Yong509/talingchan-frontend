@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 const SearchForm: React.FC = () => {
+  const [searchValue, setSearchValue] = useState<string>();
   const {
     register,
     handleSubmit,
@@ -16,11 +17,10 @@ const SearchForm: React.FC = () => {
     <>
       <form
         onSubmit={handleSubmit((e) => {
-          console.log(e);
-          clearErrors;
+          setSearchValue(e.search_input);
         })}
       >
-        <div className="w-full flex justify-center bg-black">
+        <div className="w-full flex justify-center">
           <Box style={{ position: "absolute" }}>
             <TextField
               id="serach-input"
@@ -29,9 +29,8 @@ const SearchForm: React.FC = () => {
               InputProps={{
                 sx: {
                   height: { xs: "33px", md: "55px" },
-                  fontSize: { xs: "18px", md: "14px" },
-                  width: { xs: "120px", md: "184px" },
-                  textAlign: "center",
+                  fontSize: { xs: "12px", md: "16px" },
+                  width: { xs: "120px", md: "250px" },
                 },
               }}
               {...register("search_input", {
@@ -53,6 +52,10 @@ const SearchForm: React.FC = () => {
                   xs: "33px",
                   md: "55px",
                 },
+                fontSize: {
+                  xs: "12px",
+                  md: "16px",
+                },
               }}
               style={{
                 marginLeft: "12px",
@@ -70,6 +73,4 @@ const SearchForm: React.FC = () => {
 };
 
 export default SearchForm;
-function useRef(arg0: null) {
-  throw new Error("Function not implemented.");
-}
+
