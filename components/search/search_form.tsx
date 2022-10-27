@@ -37,7 +37,6 @@ const SearchForm: React.FC = () => {
                 required: "Can not be empty",
               })}
               onBlur={() => {
-                console.log("on blur");
                 clearErrors("search_input")
               }}
               helperText={errors.search_input?.message?.toString()}
@@ -48,6 +47,7 @@ const SearchForm: React.FC = () => {
               type="submit"
               variant="contained"
               sx={{
+                width: "110px",
                 height: {
                   xs: "33px",
                   md: "55px",
