@@ -10,7 +10,8 @@ import axios from "axios";
 import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 
-<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+
+
 
 const Home: NextPage = () => {
   const [productList,setProductList] = useState<Array<ProductPayload>>([]);
@@ -19,7 +20,7 @@ const Home: NextPage = () => {
     let lotProduct: Array<LotPayload> = [];
     let unitProduct: Array<UnitPayload> = [];
    const fetchProductList = async()=>{ await axios
-    .get(process.env.API_BASE_URL + "/products")
+    .get(process.env.API_BASE_URL + "products")
     .then(function (response) {
       data = response.data.products;
     
@@ -29,7 +30,7 @@ const Home: NextPage = () => {
     });
 
     await axios
-    .get(process.env.API_BASE_URL + "/lots")
+    .get(process.env.API_BASE_URL + "lots")
     .then(function (response) {
       lotProduct = response.data;
     })
@@ -38,7 +39,7 @@ const Home: NextPage = () => {
     });
   
   await axios
-    .get(process.env.API_BASE_URL + "/units")
+    .get(process.env.API_BASE_URL + "units")
     .then(function (response) {
       unitProduct = response.data;
       console.log(unitProduct);
