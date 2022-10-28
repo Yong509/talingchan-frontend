@@ -10,62 +10,60 @@ import axios from "axios";
 import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 
+interface pageProps {
+  data?: Array<ProductPayload>;
+}
 
-
-
-const Home: NextPage = () => {
-  const [productList,setProductList] = useState<Array<ProductPayload>>([]);
-  useEffect(()=>{
-    let data: Array<ProductPayload> = [];
-    let lotProduct: Array<LotPayload> = [];
-    let unitProduct: Array<UnitPayload> = [];
-   const fetchProductList = async()=>{ await axios
-    .get(process.env.API_BASE_URL + "products")
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let data: Array<ProductPayload> = [];
+  let lotProduct: Array<LotPayload> = [];
+  let unitProduct: Array<UnitPayload> = [];
+  await axios
+    .get(process.env.API_BASE_URL + "/products")
     .then(function (response) {
       data = response.data.products;
-    
     })
     .catch(function (error) {
       console.log(error);
     });
 
-    await axios
-    .get(process.env.API_BASE_URL + "lots")
+  await axios
+    .get(process.env.API_BASE_URL + "/lots")
     .then(function (response) {
       lotProduct = response.data;
     })
     .catch(function (error) {
       console.log(error);
     });
-  
+
   await axios
-    .get(process.env.API_BASE_URL + "units")
+    .get(process.env.API_BASE_URL + "/units")
     .then(function (response) {
       unitProduct = response.data;
-      console.log(unitProduct);
     })
     .catch(function (error) {
       console.log(error);
     });
 
-    for (let index = 0; index < lotProduct.length; index++) {
-      if (lotProduct[index].productId == lotProduct.at(index)?.id) {
-        data[index].quantity = lotProduct[index].quantity; 
-      }
+  for (let index = 0; index < lotProduct.length; index++) {
+    if (lotProduct[index].productId == data.at(index)?.id) {
+      data[index].quantity = lotProduct[index].quantity;
     }
-    for (let index = 0; index < unitProduct.length; index++) {
-      if (unitProduct[index].id == lotProduct.at(index)?.unitId) {
-        data[index].unit = unitProduct[index].detail;
-      }
-    }
-
-    setProductList(data);
   }
+  for (let index = 0; index < unitProduct.length; index++) {
+    if (unitProduct[index].id == lotProduct.at(index)?.unitId) {
+      data[index].unit = unitProduct[index].detail;
+    }
+  }
+  return {
+    props: {
+      data,
+    },
+  };
+};
 
-  fetchProductList();
-
-  },[])
-  
+const Home: NextPage = (props: pageProps) => {
+  console.log(props.data);
   return (
     <>
       <div className="bg-white">
@@ -85,7 +83,7 @@ const Home: NextPage = () => {
         </div>
         <div className="pt-24">
           <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {productList?.map((item, index) => {
+            {props.data?.map((item, index) => {
               return (
                 <React.Fragment key={item.id}>
                   <ProductCard
