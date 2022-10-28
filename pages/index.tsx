@@ -10,7 +10,7 @@ import axios from "axios";
 import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 
-
+<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
 
 const Home: NextPage = () => {
   const [productList,setProductList] = useState<Array<ProductPayload>>([]);
