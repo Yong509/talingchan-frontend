@@ -14,53 +14,53 @@ interface pageProps {
   data?: Array<ProductPayload>;
 }
 
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   let data: Array<ProductPayload> = [];
-//   let lotProduct: Array<LotPayload> = [];
-//   let unitProduct: Array<UnitPayload> = [];
-//   await axios
-//     .get(process.env.API_BASE_URL + "/products")
-//     .then(function (response) {
-//       data = response.data.products;
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let data: Array<ProductPayload> = [];
+  let lotProduct: Array<LotPayload> = [];
+  let unitProduct: Array<UnitPayload> = [];
+  await axios
+    .get(process.env.API_BASE_URL + "/products")
+    .then(function (response) {
+      data = response.data.products;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
-//   await axios
-//     .get(process.env.API_BASE_URL + "/lots")
-//     .then(function (response) {
-//       lotProduct = response.data;
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
+  await axios
+    .get(process.env.API_BASE_URL + "/lots")
+    .then(function (response) {
+      lotProduct = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
-//   await axios
-//     .get(process.env.API_BASE_URL + "/units")
-//     .then(function (response) {
-//       unitProduct = response.data;
-//     })
-//     .catch(function (error) {
-//       console.log(error);
-//     });
+  await axios
+    .get(process.env.API_BASE_URL + "/units")
+    .then(function (response) {
+      unitProduct = response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 
-//   for (let index = 0; index < lotProduct.length; index++) {
-//     if (lotProduct[index].productId == data.at(index)?.id) {
-//       data[index].quantity = lotProduct[index].quantity;
-//     }
-//   }
-//   for (let index = 0; index < unitProduct.length; index++) {
-//     if (unitProduct[index].id == lotProduct.at(index)?.unitId) {
-//       data[index].unit = unitProduct[index].detail;
-//     }
-//   }
-//   return {
-//     props: {
-//       data,
-//     },
-//   };
-// };
+  for (let index = 0; index < lotProduct.length; index++) {
+    if (lotProduct[index].productId == data.at(index)?.id) {
+      data[index].quantity = lotProduct[index].quantity;
+    }
+  }
+  for (let index = 0; index < unitProduct.length; index++) {
+    if (unitProduct[index].id == lotProduct.at(index)?.unitId) {
+      data[index].unit = unitProduct[index].detail;
+    }
+  }
+  return {
+    props: {
+      data,
+    },
+  };
+};
 
 const Home: NextPage = (props: pageProps) => {
   console.log(props.data);
