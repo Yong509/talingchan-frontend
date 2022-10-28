@@ -14,7 +14,7 @@ interface pageProps {
   data?: Array<ProductPayload>;
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export async function getServerSideProps() {
   let data: Array<ProductPayload> = [];
   let lotProduct: Array<LotPayload> = [];
   let unitProduct: Array<UnitPayload> = [];
