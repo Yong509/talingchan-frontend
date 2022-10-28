@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let lotProduct: Array<LotPayload> = [];
   let unitProduct: Array<UnitPayload> = [];
   await axios
-    .get(process.env.API_BASE_URL + "/products")
+    .get(process.env.API_BASE_URL + "products")
     .then(function (response) {
       data = response.data.products;
     })
@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
 
   await axios
-    .get(process.env.API_BASE_URL + "/lots")
+    .get(process.env.API_BASE_URL + "lots")
     .then(function (response) {
       lotProduct = response.data;
     })
@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
 
   await axios
-    .get(process.env.API_BASE_URL + "/units")
+    .get(process.env.API_BASE_URL + "units")
     .then(function (response) {
       unitProduct = response.data;
     })
