@@ -10,6 +10,7 @@ describe("Product card test", () => {
       transplanting after digging the hole or anytime of the year to feed actively growing fruit trees and vines.`,
     price: 200,
     quantity: 3,
+    unit: "KG",
     picture: "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
   };
 
@@ -22,13 +23,14 @@ describe("Product card test", () => {
   it("should render correctly", () => {
     cy.mount( 
       <ProductCard
-        id={mockProductPayload.id}
-        name={mockProductPayload.name}
-        description={mockProductPayload.description}
-        price={mockProductPayload.price}
-        picture={mockProductPayload.picture}
-        quantity={3}
-      />
+          id={mockProductPayload.id}
+          name={mockProductPayload.name}
+          description={mockProductPayload.description}
+          price={mockProductPayload.price}
+          quantity={mockProductPayload.quantity}
+          unit={mockProductPayload.unit}
+          picture={mockProductPayload.picture}
+        />
     );
     cy.get('.MuiPaper-root').find('#product_img');
     cy.get('.MuiPaper-root').find('#product_name');
@@ -41,14 +43,15 @@ describe("Product card test", () => {
 
   it('select quantity should render correctly', () => {
     cy.mount( 
-        <ProductCard
-          id={mockProductPayload.id}
-          name={mockProductPayload.name}
-          description={mockProductPayload.description}
-          price={mockProductPayload.price}
-          picture={mockProductPayload.picture}
-          quantity={3}
-        />
+      <ProductCard
+      id={mockProductPayload.id}
+      name={mockProductPayload.name}
+      description={mockProductPayload.description}
+      price={mockProductPayload.price}
+      quantity={mockProductPayload.quantity}
+      unit={mockProductPayload.unit}
+      picture={mockProductPayload.picture}
+    />
       );
       cy.get('#select_quantity').click();
       cy.contains('0');
@@ -60,14 +63,15 @@ describe("Product card test", () => {
 
   it('should able to select item from dropdown and total price should correct', () => {
     cy.mount( 
-        <ProductCard
-          id={mockProductPayload.id}
-          name={mockProductPayload.name}
-          description={mockProductPayload.description}
-          price={mockProductPayload.price}
-          picture={mockProductPayload.picture}
-          quantity={3}
-        />
+      <ProductCard
+      id={mockProductPayload.id}
+      name={mockProductPayload.name}
+      description={mockProductPayload.description}
+      price={mockProductPayload.price}
+      quantity={mockProductPayload.quantity}
+      unit={mockProductPayload.unit}
+      picture={mockProductPayload.picture}
+    />
       );
       cy.get('#select_quantity').click();
       cy.get('[data-value="1"]').click();
@@ -77,13 +81,14 @@ describe("Product card test", () => {
 
   it('button should able to click', () => {
     cy.mount( 
-        <ProductCard
+      <ProductCard
           id={mockProductPayload.id}
           name={mockProductPayload.name}
           description={mockProductPayload.description}
           price={mockProductPayload.price}
+          quantity={mockProductPayload.quantity}
+          unit={mockProductPayload.unit}
           picture={mockProductPayload.picture}
-          quantity={3}
         />
       );
       cy.get('#submit_button').click();

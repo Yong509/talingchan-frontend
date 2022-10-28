@@ -53,7 +53,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
             },
           }}
         >
-          <Card>
+          <Card elevation={3}>
             <CardMedia
               id="product_img"
               component="img"
@@ -113,7 +113,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                   fontWeight: "750",
                 }}
               >
-                In Stock: {props.quantity} Unit
+                In Stock: {props.quantity} {props.unit} 
               </Typography>
             </CardContent>
             <Divider sx={{ borderBottomWidth: 1 }} />
