@@ -14,6 +14,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import Box from "@mui/material/Box";
+import { height } from "@mui/system";
 import { ProductPayload } from "model/product_model";
 import { useState } from "react";
 import { render } from "react-dom";
@@ -61,7 +62,15 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               sx={{ height: "295px", objectFit: "contain" }}
             />
             <Divider id="pic_detail_divider" sx={{ borderBottomWidth: 1 }} />
-            <CardContent style={{ paddingTop: "10px" }}>
+            <CardContent
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: 'space-between',
+                paddingTop: "10px",
+                height: "260px",
+              }}
+            >
               <Typography
                 id="product_id"
                 gutterBottom
@@ -124,12 +133,14 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               <Typography
                 id="product_instock"
                 variant="body2"
-                color="text.secondary"
+                color={props.quantity != undefined ? "#4caf50" : "#ff5722"}
                 sx={{
                   fontWeight: "750",
                 }}
               >
-                In Stock: {props.quantity} {props.unit}
+                {(props.quantity != undefined || props.quantity == 0 )
+                  ? `In Stock: ${props.quantity} ${props.unit}`
+                  : `unavailable`}
               </Typography>
             </CardContent>
             <Divider sx={{ borderBottomWidth: 1 }} />
@@ -137,9 +148,12 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               <div className="grid grid-cols-3 gap-x-5">
                 <div className="px-1 col-span-2" id="product_total">
                   <InputLabel sx={{ fontSize: { xs: "10px", md: "12px" } }}>
-                    In Stock {props.quantity} Unit
+                    {props.quantity != undefined || props.quantity == 0 
+                      ? `In Stock: ${props.quantity} ${props.unit}`
+                      : `unavailable`}
                   </InputLabel>
                   <Select
+                    disabled={props.quantity != undefined || props.quantity == 0  ? false : true}
                     id="select_quantity"
                     autoWidth
                     displayEmpty
@@ -185,26 +199,30 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                     TOTAL {props.price * selectQuantity} BAHT
                   </Typography>
                 </div>
-                <div className="flex items-end place-content-end">
-                  <Button
-                    id="submit_button"
-                    type="submit"
-                    variant="contained"
-                    sx={{
-                      minWidth: {
-                        xs: "120px",
-                        md: "110px",
-                        lg: "130px",
-                      },
-                    }}
-                    style={{
-                      borderRadius: "10px",
-                      backgroundColor: "#4caf50",
-                    }}
-                  >
-                    Add
-                  </Button>
-                </div>
+                {props.quantity != undefined ? (
+                  <div className="flex items-end place-content-end">
+                    <Button
+                      id="submit_button"
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        minWidth: {
+                          xs: "120px",
+                          md: "110px",
+                          lg: "130px",
+                        },
+                      }}
+                      style={{
+                        borderRadius: "10px",
+                        backgroundColor: "#4caf50",
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
             </CardActions>
           </Card>
