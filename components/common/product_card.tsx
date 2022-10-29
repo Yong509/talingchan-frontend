@@ -48,7 +48,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                 lg: "400px",
                 xl: "450px",
               },
-              height: 620,
+              height: 660,
               borderRadius: 5,
             },
           }}
@@ -58,16 +58,32 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               id="product_img"
               component="img"
               image={props.picture}
-              sx={{ height: "280px", objectFit: "contain" }}
+              sx={{ height: "295px", objectFit: "contain" }}
             />
             <Divider id="pic_detail_divider" sx={{ borderBottomWidth: 1 }} />
             <CardContent style={{ paddingTop: "10px" }}>
+              <Typography
+                id="product_id"
+                gutterBottom
+                component="div"
+                sx={{
+                  paddingTop: 1,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  display: "-webkit-box",
+                  WebkitLineClamp: "2",
+                  WebkitBoxOrient: "vertical",
+                  fontWeight: "650",
+                  fontSize: "0.82rem",
+                }}
+              >
+                Product ID: {props.id}
+              </Typography>
               <Typography
                 id="product_name"
                 gutterBottom
                 component="div"
                 sx={{
-                  paddingTop: 1,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   display: "-webkit-box",
@@ -113,7 +129,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                   fontWeight: "750",
                 }}
               >
-                In Stock: {props.quantity} {props.unit} 
+                In Stock: {props.quantity} {props.unit}
               </Typography>
             </CardContent>
             <Divider sx={{ borderBottomWidth: 1 }} />
@@ -137,10 +153,10 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                       required: "Can not be empty",
                     })}
                     onChange={(e) => {
-                      if(e.target.value == "deselect"){
+                      if (e.target.value == "deselect") {
                         setSelectQuantity(0);
-                      }else{
-                      setSelectQuantity(parseInt(e.target.value + 1));
+                      } else {
+                        setSelectQuantity(parseInt(e.target.value + 1));
                       }
                     }}
                   >
@@ -151,7 +167,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                       (item, index) => {
                         return (
                           <MenuItem key={index} value={index}>
-                            {item + 1} Unit
+                            {item + 1} {props.unit}
                           </MenuItem>
                         );
                       }
@@ -174,6 +190,13 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                     id="submit_button"
                     type="submit"
                     variant="contained"
+                    sx={{
+                      minWidth: {
+                        xs: "120px",
+                        md: "110px",
+                        lg: "130px",
+                      },
+                    }}
                     style={{
                       borderRadius: "10px",
                       backgroundColor: "#4caf50",
