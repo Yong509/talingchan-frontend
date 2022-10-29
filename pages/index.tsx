@@ -10,62 +10,63 @@ import axios from "axios";
 import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 
-
-
-
 const Home: NextPage = () => {
-  const [productList,setProductList] = useState<Array<ProductPayload>>([]);
-  useEffect(()=>{
+  const [productList, setProductList] = useState<Array<ProductPayload>>([]);
+  useEffect(() => {
     let data: Array<ProductPayload> = [];
     let lotProduct: Array<LotPayload> = [];
     let unitProduct: Array<UnitPayload> = [];
-   const fetchProductList = async()=>{ await axios
-    .get(process.env.API_BASE_URL + "products")
-    .then(function (response) {
-      data = response.data.products;
-    
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+    const fetchProductList = async () => {
+      await axios
+        .get(process.env.API_BASE_URL + "products")
+        .then(function (response) {
+          data = response.data.products;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
-    await axios
-    .get(process.env.API_BASE_URL + "lots")
-    .then(function (response) {
-      lotProduct = response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
-  
-  await axios
-    .get(process.env.API_BASE_URL + "units")
-    .then(function (response) {
-      unitProduct = response.data;
-      console.log(unitProduct);
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+      await axios
+        .get(process.env.API_BASE_URL + "lots")
+        .then(function (response) {
+          lotProduct = response.data;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
-    for (let index = 0; index < lotProduct.length; index++) {
-      if (lotProduct[index].productId == lotProduct.at(index)?.id) {
-        data[index].quantity = lotProduct[index].quantity; 
+      await axios
+        .get(process.env.API_BASE_URL + "units")
+        .then(function (response) {
+          unitProduct = response.data;
+          console.log(unitProduct);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      for (let index = 0; index < data.length; index++) {
+        for (let j = 0; j < lotProduct.length; j++) {
+          if (data[index].id == lotProduct[j].productId) {
+            data[index].quantity = lotProduct[j].quantity;
+          }
+        }
       }
-    }
-    for (let index = 0; index < unitProduct.length; index++) {
-      if (unitProduct[index].id == lotProduct.at(index)?.unitId) {
-        data[index].unit = unitProduct[index].detail;
+
+      for (let index = 0; index < lotProduct.length; index++) {
+        for (let j = 0; j < unitProduct.length; j++) {
+          if (lotProduct[index].unitId == unitProduct[j].id) {
+            data[index].unit = unitProduct[j].detail;
+          }
+        }
       }
-    }
 
-    setProductList(data);
-  }
+      setProductList(data);
+    };
 
-  fetchProductList();
+    fetchProductList();
+  }, []);
 
-  },[])
-  
   return (
     <>
       <div className="bg-white">
