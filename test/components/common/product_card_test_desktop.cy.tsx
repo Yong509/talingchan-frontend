@@ -14,7 +14,7 @@ describe("Product card test", () => {
     picture: "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
   };
 
-  context("Desktop resolution", () => {
+  context("Product card available Desktop resolution", () => {
     beforeEach(() => {
       cy.viewport(1280, 1080);
       cy.mount(
@@ -58,6 +58,50 @@ describe("Product card test", () => {
 
     it("button should able to click", () => {
       cy.get("#submit_button").click();
+    });
+  });
+
+  context("product card un available Desktop resolution", () => {
+    beforeEach(() => {
+      cy.viewport(1280, 1080);
+      cy.mount(
+        <ProductCard
+          id={mockProductPayload.id}
+          name={mockProductPayload.name}
+          description={mockProductPayload.description}
+          price={mockProductPayload.price}
+          picture={mockProductPayload.picture}
+          quantity={0}
+          unit={mockProductPayload.unit}
+        />
+      );
+    });
+
+    it("should render correctly", () => {
+      cy.get(".MuiPaper-root").find("#product_img");
+      cy.get(".MuiPaper-root").find("#product_id");
+      cy.get(".MuiPaper-root").find("#product_name");
+      cy.get(".MuiPaper-root").find("#product_description");
+      cy.get(".MuiPaper-root").find("#product_price");
+      cy.get(".MuiPaper-root").find("#product_instock");
+      cy.get(".MuiPaper-root").find("#product_total");
+      cy.get(".MuiPaper-root").find("#submit_button").should("not.exist");
+    });
+
+    it("select quantity should be disable", () => {
+      cy.get("#select_quantity").click();
+      cy.contains("[id='deslect_menuitem']").should("not.exist");
+      cy.contains("[id='0_menuitem']").should("not.exist");
+      cy.contains("[id='1_menuitem']").should("not.exist");
+      cy.contains("[id='2_menuitem']").should("not.exist");
+      cy.contains("[id='3_menuitem']").should("not.exist");
+    });
+
+    it("should show unavailable text", () => {
+      cy.get(".MuiPaper-root")
+        .find("#product_instock")
+        .should("have.text", "unavailable");
+      cy.contains("unavailable");
     });
   });
 });

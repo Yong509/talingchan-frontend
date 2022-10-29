@@ -66,7 +66,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: 'space-between',
+                justifyContent: "space-between",
                 paddingTop: "10px",
                 height: "260px",
               }}
@@ -133,12 +133,12 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               <Typography
                 id="product_instock"
                 variant="body2"
-                color={props.quantity != undefined ? "#4caf50" : "#ff5722"}
+                color={props.quantity != 0 ? "#4caf50" : "#ff5722"}
                 sx={{
                   fontWeight: "750",
                 }}
               >
-                {(props.quantity != undefined || props.quantity == 0 )
+                {props.quantity != 0
                   ? `In Stock: ${props.quantity} ${props.unit}`
                   : `unavailable`}
               </Typography>
@@ -148,12 +148,12 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               <div className="grid grid-cols-3 gap-x-5">
                 <div className="px-1 col-span-2" id="product_total">
                   <InputLabel sx={{ fontSize: { xs: "10px", md: "12px" } }}>
-                    {props.quantity != undefined || props.quantity == 0 
+                    {props.quantity != 0
                       ? `In Stock: ${props.quantity} ${props.unit}`
                       : `unavailable`}
                   </InputLabel>
                   <Select
-                    disabled={props.quantity != undefined || props.quantity == 0  ? false : true}
+                    disabled={props.quantity != 0 ? false : true}
                     id="select_quantity"
                     autoWidth
                     displayEmpty
@@ -174,13 +174,13 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                       }
                     }}
                   >
-                    <MenuItem value={"deselect"}>
+                    <MenuItem key={"deselect_menuitem"} value={"deselect"}>
                       <em>None</em>
                     </MenuItem>
                     {Array.from(Array(props.quantity).keys()).map(
                       (item, index) => {
                         return (
-                          <MenuItem key={index} value={index}>
+                          <MenuItem key={`${index}_menuitem`} value={index}>
                             {item + 1} {props.unit}
                           </MenuItem>
                         );
@@ -199,7 +199,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                     TOTAL {props.price * selectQuantity} BAHT
                   </Typography>
                 </div>
-                {props.quantity != undefined ? (
+                {props.quantity != 0 ? (
                   <div className="flex items-end place-content-end">
                     <Button
                       id="submit_button"
