@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import CustomAppBar from "components/common/custom_app_bar";
 import SearchForm from "components/search/search_form";
 import TextField from "@mui/material/TextField";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import ProductCard from "components/common/product_card";
 import { ProductPayload } from "model/product_model";
 import React, { useEffect, useState } from "react";
@@ -70,6 +70,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Home: NextPage = (props: pageProps) => {
   const router = useRouter();
+  const [searchProduct, setSearchProduct] = useState<string>("");
   return (
     <>
       <div className="bg-white">
@@ -91,25 +92,54 @@ const Home: NextPage = (props: pageProps) => {
           />
         </div>
         <div className="pt-44">
-          <SearchForm />
+          <div>
+            <SearchForm
+              onChange={(value) => {
+                setSearchProduct(value);
+              }}
+            />
+          </div>
         </div>
         <div className="pt-24">
           <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {props.data?.map((item, index) => {
-              return (
-                <React.Fragment key={item.id}>
-                  <ProductCard
-                    id={item.id}
-                    name={item.name}
-                    description={item.description}
-                    price={item.price}
-                    quantity={item.quantity}
-                    unit={item.unit}
-                    picture={item.picture}
-                  />
-                </React.Fragment>
-              );
-            })}
+            {searchProduct.length == 0
+              ? props.data?.map((item, index) => {
+                  return (
+                    <React.Fragment key={item.id}>
+                      <ProductCard
+                        id={item.id}
+                        name={item.name}
+                        description={item.description}
+                        price={item.price}
+                        quantity={item.quantity}
+                        unit={item.unit}
+                        picture={item.picture}
+                      />
+                    </React.Fragment>
+                  );
+                })
+              : props.data?.map((item, index) => {
+                  if (
+                    item.name
+                      .toUpperCase()
+                      .includes(searchProduct.toUpperCase()) ||
+                    searchProduct == item.id.toString()
+                  ) {
+                    return (
+                      <React.Fragment key={item.id}>
+                        <ProductCard
+                          id={item.id}
+                          name={item.name}
+                          description={item.description}
+                          price={item.price}
+                          quantity={item.quantity}
+                          unit={item.unit}
+                          picture={item.picture}
+                        />
+                      </React.Fragment>
+                    );
+                  }
+                })}
           </div>
         </div>
       </div>
