@@ -9,16 +9,16 @@ import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Toolbar, IconButton, Button, Drawer } from "@mui/material";
 
-interface buttonProps{
-  buttonTitle: string,
-  onClick: MouseEventHandler<HTMLDivElement>
+interface buttonProps {
+  buttonTitle: string;
+  onClick: MouseEventHandler<HTMLDivElement>;
 }
 
 interface appBarProps {
-  id: string,
-  title?: string,
-  button?: Array<buttonProps>,
-  window?: () => Window
+  id: string;
+  title?: string;
+  button?: Array<buttonProps>;
+  window?: () => Window;
 }
 
 const drawerWidth = 240;
@@ -37,11 +37,11 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-      {props.title ? props.title : 'Talingchan Fertilizer'}
+        {props.title ? props.title : "Talingchan Fertilizer"}
       </Typography>
       <Divider />
       <List>
-        {props.button?.map((item:buttonProps,index:number) => (
+        {props.button?.map((item: buttonProps, index: number) => (
           <ListItem key={item.buttonTitle} disablePadding>
             <ListItemButton sx={{ textAlign: "center" }} onClick={item.onClick}>
               <ListItemText primary={item.buttonTitle} />
@@ -55,7 +55,8 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
   return (
     <>
       <Box sx={{ display: "flex" }}>
-        <AppBar id={props.id}
+        <AppBar
+          id={props.id}
           component="nav"
           sx={{ bgcolor: "white", color: "black" }}
           elevation={1}
@@ -75,24 +76,26 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
               component="div"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
             >
-              {props.title ? props.title : 'Talingchan Fertilizer'}
+              {props.title ? props.title : "Talingchan Fertilizer"}
             </Typography>
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              {props.button?.map((item:buttonProps,index:number) => (
-                <Button
-                  id={item.buttonTitle}
-                  key={item.buttonTitle}
-                  onClick={()=>{item.onClick}}
-                  sx={{
-                    color: "black",
-                    "&:hover": {
-                      backgroundColor: "#fff",
-                    },
-                  }}
-                >
-                  {item.buttonTitle}
-                </Button>
-              ))}
+              <div className="flex flex-row-auto">
+                {props.button?.map((item: buttonProps, index: number) => (
+                  <div onClick={item.onClick} key={item.buttonTitle}>
+                    <Button
+                      id={item.buttonTitle}
+                      sx={{
+                        color: "black",
+                        "&:hover": {
+                          backgroundColor: "#fff",
+                        },
+                      }}
+                    >
+                      {item.buttonTitle}
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </Box>
           </Toolbar>
         </AppBar>

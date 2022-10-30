@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
+import { useRouter } from "next/router";
 
 interface pageProps {
   data?: Array<ProductPayload>;
@@ -68,6 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 const Home: NextPage = (props: pageProps) => {
+  const router = useRouter();
   return (
     <>
       <div className="bg-white">
@@ -76,7 +78,13 @@ const Home: NextPage = (props: pageProps) => {
             title="Talingchan Fertilizer"
             button={[
               { buttonTitle: "Receive", onClick: () => {} },
-              { buttonTitle: "Cart", onClick: () => {} },
+              {
+                buttonTitle: "Cart",
+                onClick: (e) => {
+                  e.preventDefault();
+                  router.push("/cart/");
+                },
+              },
               { buttonTitle: "Login", onClick: () => {} },
             ]}
             id={"HomeAppBar"}

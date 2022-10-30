@@ -37,7 +37,7 @@ const SearchForm: React.FC = () => {
                 required: "Can not be empty",
               })}
               onBlur={() => {
-                clearErrors("search_input")
+                clearErrors("search_input");
               }}
               helperText={errors.search_input?.message?.toString()}
               error={errors.search_input?.message ? true : false}
@@ -73,4 +73,3 @@ const SearchForm: React.FC = () => {
 };
 
 export default SearchForm;
-
