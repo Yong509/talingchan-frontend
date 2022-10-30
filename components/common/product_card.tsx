@@ -19,10 +19,14 @@ import { ProductPayload } from "model/product_model";
 import { useState } from "react";
 import { render } from "react-dom";
 import { useForm } from "react-hook-form";
+import { setCookie } from "cookies-next";
+import { CartModel } from "model/cart_model";
 
 const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
   const [selectQuantity, setSelectQuantity] = useState<number>(0);
-  const [selectProduct, setSelectProduct] = useState<number>();
+  const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
+  const [errorSelect, setErrorSelect] = useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -32,12 +36,39 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
     reset,
   } = useForm();
 
+  const handleCreateSelectProduct = (data: ProductPayload) => {
+    let temp = {
+      id: data.id,
+      name: data.name,
+      quantity: selectQuantity,
+      pricePerUnit: data.price,
+      total: data.price * selectQuantity,
+    };
+    setSelectProduct((selectProduct) => selectProduct.concat(temp));
+  };
+
   return (
     <>
       <form
         id="product_card"
         onSubmit={handleSubmit((e) => {
-          setSelectProduct(props.id);
+          if (selectQuantity == 0) {
+            setErrorSelect(true);
+          } else {
+            setErrorSelect(false);
+            handleCreateSelectProduct(props);
+            console.log(selectProduct);
+            // setSelectProduct((selectProduct) => [
+            //   ...selectProduct,
+            // {
+            //   id: props.id,
+            //   name: props.name,
+            //   quantity: selectQuantity,
+            //   pricePerUnit: props.price,
+            //   total: props.price * selectQuantity,
+            // },
+            // ]);
+          }
         })}
       >
         <Box
@@ -163,8 +194,16 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                       height: 34,
                       fontSize: { xs: "10px", md: "12px" },
                     }}
+                    error={errorSelect}
                     {...register("select_quantity", {
-                      required: "Can not be empty",
+                      validate: (value) => {
+                        if (value + 1 == 0) {
+                          setErrorSelect(true);
+                          return "Error";
+                        } else {
+                          setErrorSelect(false);
+                        }
+                      },
                     })}
                     onChange={(e) => {
                       if (e.target.value == "deselect") {

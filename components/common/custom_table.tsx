@@ -94,6 +94,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
           <TableBody>
             {props.data!.map((row, index) => (
               <TableRow
+                id="table-row"
                 onClick={() => {
                   console.log("click id = " + row[0]);
                   props.onOpen?.(parseInt(row[0]));
@@ -134,7 +135,15 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                 })}
                 {props.deleteAble ? (
                   <TableCell width="10%" align="right">
-                    <Image src="/trash.svg" width={30} height={30} />
+                    <Image
+                      src="/trash.svg"
+                      width={30}
+                      height={30}
+                      id="trash-icon"
+                      onClick={(e) => {
+                        props.onDelete?.(parseInt(row[0]));
+                      }}
+                    />
                   </TableCell>
                 ) : (
                   <></>
