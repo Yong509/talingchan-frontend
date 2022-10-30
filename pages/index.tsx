@@ -71,6 +71,48 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Home: NextPage = (props: pageProps) => {
   const router = useRouter();
   const [searchProduct, setSearchProduct] = useState<string>("");
+
+  const showData = () => {
+    const data = props.data?.map((item, index) => {
+      if (
+        item.name.toUpperCase().includes(searchProduct.toUpperCase()) ||
+        searchProduct == item.id.toString()
+      ) {
+        return (
+          <React.Fragment key={item.id}>
+            <ProductCard
+              id={item.id}
+              name={item.name}
+              description={item.description}
+              price={item.price}
+              quantity={item.quantity}
+              unit={item.unit}
+              picture={item.picture}
+            />
+          </React.Fragment>
+        );
+      }
+    });
+    console.log(data);
+    if (!data || data[0] == undefined) {
+      console.log("Not found");
+      return (
+        <Typography
+          id="total_price"
+          variant="body1"
+          color="text.secondary"
+          sx={{
+            pt: 1,
+            fontWeight: "750",
+            color: "black",
+          }}
+        >
+          Not found {searchProduct}
+        </Typography>
+      );
+    }
+    return data;
+  };
   return (
     <>
       <div className="bg-white">
@@ -118,28 +160,7 @@ const Home: NextPage = (props: pageProps) => {
                     </React.Fragment>
                   );
                 })
-              : props.data?.map((item, index) => {
-                  if (
-                    item.name
-                      .toUpperCase()
-                      .includes(searchProduct.toUpperCase()) ||
-                    searchProduct == item.id.toString()
-                  ) {
-                    return (
-                      <React.Fragment key={item.id}>
-                        <ProductCard
-                          id={item.id}
-                          name={item.name}
-                          description={item.description}
-                          price={item.price}
-                          quantity={item.quantity}
-                          unit={item.unit}
-                          picture={item.picture}
-                        />
-                      </React.Fragment>
-                    );
-                  }
-                })}
+              : showData()}
           </div>
         </div>
       </div>
