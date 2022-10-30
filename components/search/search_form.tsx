@@ -1,9 +1,13 @@
 import { Box, Button, TextField } from "@mui/material";
+import { props } from "cypress/types/bluebird";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
-const SearchForm: React.FC = () => {
-  const [searchValue, setSearchValue] = useState<string>();
+interface searchProp {
+  onChange?: (value: string) => void;
+}
+
+const SearchForm: React.FC<searchProp> = (props: searchProp) => {
   const {
     register,
     handleSubmit,
@@ -13,11 +17,15 @@ const SearchForm: React.FC = () => {
     reset,
   } = useForm();
 
+  const onSubmitSearch = (searchValue: string) => {
+    props.onChange?.(searchValue);
+  };
+
   return (
     <>
       <form
         onSubmit={handleSubmit((e) => {
-          setSearchValue(e.search_input);
+          onSubmitSearch(e.search_input);
         })}
       >
         <div className="w-full flex justify-center">
@@ -33,14 +41,12 @@ const SearchForm: React.FC = () => {
                   width: { xs: "120px", md: "250px" },
                 },
               }}
-              {...register("search_input", {
-                required: "Can not be empty",
-              })}
-              onBlur={() => {
-                clearErrors("search_input")
-              }}
-              helperText={errors.search_input?.message?.toString()}
-              error={errors.search_input?.message ? true : false}
+              {...register("search_input")}
+              // onBlur={() => {
+              //   clearErrors("search_input");
+              // }}
+              // helperText={errors.search_input?.message?.toString()}
+              // error={errors.search_input?.message ? true : false}
             />
 
             <Button
@@ -73,4 +79,3 @@ const SearchForm: React.FC = () => {
 };
 
 export default SearchForm;
-
