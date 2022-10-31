@@ -2,7 +2,7 @@ import type { GetServerSideProps, NextPage } from "next";
 import CustomAppBar from "components/common/custom_app_bar";
 import SearchForm from "components/search/search_form";
 import TextField from "@mui/material/TextField";
-import { Box, Button, Typography } from "@mui/material";
+import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
 import ProductCard from "components/common/product_card";
 import { ProductPayload } from "model/product_model";
 import React, { useEffect, useState } from "react";
@@ -74,6 +74,9 @@ const Home: NextPage = (props: pageProps) => {
   const router = useRouter();
   const [searchProduct, setSearchProduct] = useState<string>("");
   const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
+  const [open, setOpen] = useState(false);
+  const [errorOpen, setErrorOpen] = useState(false);
+  const [addProduct, setAddProduct] = useState<CartModel>();
 
   console.log(selectProduct);
   setCookie("selectProductCookies", JSON.stringify(selectProduct));
@@ -127,6 +130,28 @@ const Home: NextPage = (props: pageProps) => {
     }
     return data;
   };
+
+  const handleClick = (product: CartModel) => {
+    setAddProduct(product);
+    setErrorOpen(false);
+    setOpen(true);
+  };
+
+  const handleError = () => {
+    setOpen(false);
+    setErrorOpen(true);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+    setErrorOpen(false);
+  };
   return (
     <>
       <div className="bg-white">
@@ -173,6 +198,7 @@ const Home: NextPage = (props: pageProps) => {
                           picture: item.picture,
                         }}
                         onSelectProduct={(product) => {
+                          handleClick(product);
                           setSelectProduct((searchProduct) => [
                             ...searchProduct,
                             product,
@@ -185,6 +211,24 @@ const Home: NextPage = (props: pageProps) => {
               : showData()}
           </div>
         </div>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Added {addProduct?.quantity} of {addProduct?.name} successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={errorOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
+            Not found
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
