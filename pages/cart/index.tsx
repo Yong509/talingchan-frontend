@@ -9,6 +9,7 @@ import {
 
 import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
+import CustomDialog from "components/common/custom_dialog";
 import CustomTable from "components/common/custom_table";
 import { getCookie } from "cookies-next";
 import { data } from "cypress/types/jquery";
@@ -43,6 +44,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [searchCustomer, setSearchCustomer] = useState<CustomerModel>();
   const [open, setOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
+  const [productName, setProductName] = useState<string>();
+  const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const {
     register,
@@ -133,6 +136,10 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomTable
             deleteAble={true}
             total={true}
+            onDelete={(product) => {
+              setProductName(product);
+              setOpenDialog(true);
+            }}
             customer={searchCustomer?.name}
             tableHead={[
               { title: "Product ID", style: "" },
@@ -226,6 +233,23 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             Not found
           </Alert>
         </Snackbar>
+        <CustomDialog
+          title={{
+            text: `Remove ${productName} out of cart.`,
+            color: "#F26161",
+          }}
+          content={`Are you sure you want to remove ${productName} out of your cart?`}
+          open={openDialog}
+          cancelButton={{ text: "cancel", fontColor: "black" }}
+          confirmButton={{
+            text: "confirm",
+            color: "#F26161",
+            fontColor: "white",
+          }}
+          onCancel={() => {
+            setOpenDialog(false);
+          }}
+        />
       </div>
     </>
   );

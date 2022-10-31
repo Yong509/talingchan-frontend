@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow/TableRow";
 import Image from "next/image";
 import Typography from "@mui/material/Typography/Typography";
 import Button from "@mui/material/Button/Button";
+import { CartModel } from "model/cart_model";
 
 interface columnTable {
   title: string;
@@ -21,7 +22,7 @@ interface customTableProps {
   deleteAble?: boolean;
   customer?: string;
   onOpen?: (id: number) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (product: string) => void;
 }
 
 const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
@@ -132,6 +133,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
               <TableRow
                 id="table-row"
                 onClick={() => {
+                  console.log(row[1]);
                   props.onOpen?.(parseInt(row[0]));
                 }}
                 style={{ ...getStripedStyle(index) }}
@@ -145,9 +147,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                         align="left"
                         sx={{
                           maxWidth: "100px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          wordBreak: "break-word",
                         }}
                       >
                         {item}
@@ -160,9 +160,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                         align="right"
                         sx={{
                           maxWidth: "100px",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          wordBreak: "break-word",
                         }}
                       >
                         {item}
@@ -178,7 +176,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                       height={30}
                       id="trash-icon"
                       onClick={(e) => {
-                        props.onDelete?.(parseInt(row[0]));
+                        props.onDelete?.(row[1]);
                       }}
                     />
                   </TableCell>
