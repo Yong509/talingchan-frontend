@@ -14,20 +14,23 @@ describe("Product card test", () => {
     picture: "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
   };
 
+  const mockUnavailableProductPayload: ProductPayload = {
+    id: 1,
+    name: "DR. EARTH ORGANIC AND NATURAL NATURAL WONDER® FRUIT TREE FERTILIZER 5-5-2",
+    description: `Natural Wonder® fertilizer is formulated to feed all fruit trees, berries, 
+      and fruiting vines in containers or any backyard soils. It can be used during the initial 
+      transplanting after digging the hole or anytime of the year to feed actively growing fruit trees and vines.`,
+    price: 200,
+    quantity: 0,
+    unit: "KG",
+    picture: "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
+  };
+
   context("Product card available Desktop resolution", () => {
     beforeEach(() => {
       cy.viewport("iphone-xr");
-      cy.mount(
-        <ProductCard
-          id={mockProductPayload.id}
-          name={mockProductPayload.name}
-          description={mockProductPayload.description}
-          price={mockProductPayload.price}
-          picture={mockProductPayload.picture}
-          quantity={mockProductPayload.quantity}
-          unit={mockProductPayload.unit}
-        />
-      );
+
+      cy.mount(<ProductCard product={mockProductPayload} />);
     });
 
     it("should render correctly", () => {
@@ -64,17 +67,7 @@ describe("Product card test", () => {
   context("product card un available Desktop resolution", () => {
     beforeEach(() => {
       cy.viewport("iphone-xr");
-      cy.mount(
-        <ProductCard
-          id={mockProductPayload.id}
-          name={mockProductPayload.name}
-          description={mockProductPayload.description}
-          price={mockProductPayload.price}
-          picture={mockProductPayload.picture}
-          quantity={0}
-          unit={mockProductPayload.unit}
-        />
-      );
+      cy.mount(<ProductCard product={mockUnavailableProductPayload} />);
     });
 
     it("should render correctly", () => {

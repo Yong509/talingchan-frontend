@@ -10,6 +10,8 @@ import axios from "axios";
 import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 import { useRouter } from "next/router";
+import { CartModel } from "model/cart_model";
+import { setCookie } from "cookies-next";
 
 interface pageProps {
   data?: Array<ProductPayload>;
@@ -71,6 +73,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Home: NextPage = (props: pageProps) => {
   const router = useRouter();
   const [searchProduct, setSearchProduct] = useState<string>("");
+  const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
+
+  console.log(selectProduct);
+  setCookie("selectProductCookies", JSON.stringify(selectProduct));
 
   const showData = () => {
     const data = props.data?.map((item, index) => {
@@ -81,13 +87,21 @@ const Home: NextPage = (props: pageProps) => {
         return (
           <React.Fragment key={item.id}>
             <ProductCard
-              id={item.id}
-              name={item.name}
-              description={item.description}
-              price={item.price}
-              quantity={item.quantity}
-              unit={item.unit}
-              picture={item.picture}
+              product={{
+                id: item.id,
+                name: item.name,
+                description: item.description,
+                price: item.price,
+                quantity: item.quantity,
+                unit: item.unit,
+                picture: item.picture,
+              }}
+              onSelectProduct={(product) => {
+                setSelectProduct((searchProduct) => [
+                  ...searchProduct,
+                  product,
+                ]);
+              }}
             />
           </React.Fragment>
         );
@@ -149,13 +163,21 @@ const Home: NextPage = (props: pageProps) => {
                   return (
                     <React.Fragment key={item.id}>
                       <ProductCard
-                        id={item.id}
-                        name={item.name}
-                        description={item.description}
-                        price={item.price}
-                        quantity={item.quantity}
-                        unit={item.unit}
-                        picture={item.picture}
+                        product={{
+                          id: item.id,
+                          name: item.name,
+                          description: item.description,
+                          price: item.price,
+                          quantity: item.quantity,
+                          unit: item.unit,
+                          picture: item.picture,
+                        }}
+                        onSelectProduct={(product) => {
+                          setSelectProduct((searchProduct) => [
+                            ...searchProduct,
+                            product,
+                          ]);
+                        }}
                       />
                     </React.Fragment>
                   );

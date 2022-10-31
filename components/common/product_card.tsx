@@ -19,10 +19,14 @@ import { ProductPayload } from "model/product_model";
 import { useState } from "react";
 import { render } from "react-dom";
 import { useForm } from "react-hook-form";
-import { setCookie } from "cookies-next";
 import { CartModel } from "model/cart_model";
 
-const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
+interface productCardProps {
+  product: ProductPayload;
+  onSelectProduct?: (product: CartModel) => void;
+}
+
+const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
   const [selectQuantity, setSelectQuantity] = useState<number>(0);
   const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
   const [errorSelect, setErrorSelect] = useState<boolean>(false);
@@ -36,38 +40,22 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
     reset,
   } = useForm();
 
-  const handleCreateSelectProduct = (data: ProductPayload) => {
-    let temp = {
-      id: data.id,
-      name: data.name,
-      quantity: selectQuantity,
-      pricePerUnit: data.price,
-      total: data.price * selectQuantity,
-    };
-    setSelectProduct((selectProduct) => selectProduct.concat(temp));
-  };
-
   return (
     <>
       <form
         id="product_card"
         onSubmit={handleSubmit((e) => {
+          const tempSelectProduct: CartModel[] = selectProduct;
           if (selectQuantity == 0) {
             setErrorSelect(true);
           } else {
-            setErrorSelect(false);
-            handleCreateSelectProduct(props);
-            console.log(selectProduct);
-            // setSelectProduct((selectProduct) => [
-            //   ...selectProduct,
-            // {
-            //   id: props.id,
-            //   name: props.name,
-            //   quantity: selectQuantity,
-            //   pricePerUnit: props.price,
-            //   total: props.price * selectQuantity,
-            // },
-            // ]);
+            props.onSelectProduct?.({
+              id: props.product.id,
+              name: props.product.name,
+              quantity: selectQuantity,
+              pricePerUnit: props.product.price,
+              total: selectQuantity * props.product.price,
+            });
           }
         })}
       >
@@ -89,7 +77,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
             <CardMedia
               id="product_img"
               component="img"
-              image={props.picture}
+              image={props.product.picture}
               sx={{ height: "295px", objectFit: "contain" }}
             />
             <Divider id="pic_detail_divider" sx={{ borderBottomWidth: 1 }} />
@@ -117,7 +105,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                   fontSize: "0.82rem",
                 }}
               >
-                Product ID: {props.id}
+                Product ID: {props.product.id}
               </Typography>
               <Typography
                 id="product_name"
@@ -133,7 +121,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                   fontSize: "1.2rem",
                 }}
               >
-                {props.name}
+                {props.product.name}
               </Typography>
               <Typography
                 id="product_description"
@@ -147,7 +135,7 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                   WebkitBoxOrient: "vertical",
                 }}
               >
-                {props.description}
+                {props.product.description}
               </Typography>
               <Typography
                 id="product_price"
@@ -159,18 +147,18 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                   fontWeight: "750",
                 }}
               >
-                {props.price} BAHT
+                {props.product.price} BAHT
               </Typography>
               <Typography
                 id="product_instock"
                 variant="body2"
-                color={props.quantity != 0 ? "#4caf50" : "#ff5722"}
+                color={props.product.quantity != 0 ? "#4caf50" : "#ff5722"}
                 sx={{
                   fontWeight: "750",
                 }}
               >
-                {props.quantity != 0
-                  ? `In Stock: ${props.quantity} ${props.unit}`
+                {props.product.quantity != 0
+                  ? `In Stock: ${props.product.quantity} ${props.product.unit}`
                   : `unavailable`}
               </Typography>
             </CardContent>
@@ -179,12 +167,12 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
               <div className="grid grid-cols-3 gap-x-5">
                 <div className="px-1 col-span-2" id="product_total">
                   <InputLabel sx={{ fontSize: { xs: "10px", md: "12px" } }}>
-                    {props.quantity != 0
-                      ? `In Stock: ${props.quantity} ${props.unit}`
+                    {props.product.quantity != 0
+                      ? `In Stock: ${props.product.quantity} ${props.product.unit}`
                       : `unavailable`}
                   </InputLabel>
                   <Select
-                    disabled={props.quantity != 0 ? false : true}
+                    disabled={props.product.quantity != 0 ? false : true}
                     id="select_quantity"
                     autoWidth
                     displayEmpty
@@ -216,11 +204,11 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                     <MenuItem key={"deselect_menuitem"} value={"deselect"}>
                       <em>None</em>
                     </MenuItem>
-                    {Array.from(Array(props.quantity).keys()).map(
+                    {Array.from(Array(props.product.quantity).keys()).map(
                       (item, index) => {
                         return (
                           <MenuItem key={`${index}_menuitem`} value={index}>
-                            {item + 1} {props.unit}
+                            {item + 1} {props.product.unit}
                           </MenuItem>
                         );
                       }
@@ -235,10 +223,10 @@ const ProductCard: React.FC<ProductPayload> = (props: ProductPayload) => {
                       fontWeight: "750",
                     }}
                   >
-                    TOTAL {props.price * selectQuantity} BAHT
+                    TOTAL {props.product.price * selectQuantity} BAHT
                   </Typography>
                 </div>
-                {props.quantity != 0 ? (
+                {props.product.quantity != 0 ? (
                   <div className="flex items-end place-content-end">
                     <Button
                       id="submit_button"

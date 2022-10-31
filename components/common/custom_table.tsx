@@ -8,11 +8,18 @@ import TableRow from "@mui/material/TableRow/TableRow";
 import Image from "next/image";
 import Typography from "@mui/material/Typography/Typography";
 import Button from "@mui/material/Button/Button";
+
+interface columnTable {
+  title: string;
+  style: string;
+}
+
 interface customTableProps {
-  tableHead: Array<string>;
+  tableHead: Array<columnTable>;
   data?: Array<Array<string>>;
   total?: boolean;
   deleteAble?: boolean;
+  customer?: string;
   onOpen?: (id: number) => void;
   onDelete?: (id: number) => void;
 }
@@ -27,10 +34,24 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
         <Table sx={{ minWidth: 650 }} aria-label="caption table">
           {props.total ? (
             <caption>
-              <div className="grid grid-cols-8">
-                <div className="col-span-5">
+              <div className="grid grid-cols-8 items-center">
+                <div className={`col-span-5`}>
                   <Typography
                     id="total_text"
+                    variant="body1"
+                    align="left"
+                    color="text.primary"
+                    sx={{
+                      fontWeight: "750",
+                    }}
+                  >
+                    {props.customer != undefined ? props.customer : ""}
+                    &nbsp;&nbsp;&nbsp;&nbsp;TOTAL
+                  </Typography>
+                </div>
+                <div className="col-span-2">
+                  <Typography
+                    id="total_price"
                     variant="body1"
                     align="center"
                     color="text.primary"
@@ -38,10 +59,9 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                       fontWeight: "750",
                     }}
                   >
-                    Total
+                    10000 BAHT
                   </Typography>
                 </div>
-                <div className="col-span-2"></div>
                 <div>
                   <Button
                     type="submit"
@@ -78,9 +98,17 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
             <TableRow>
               {props.tableHead?.map((item, index) => {
                 if (index == 0) {
-                  return <TableCell>{item}</TableCell>;
+                  return <TableCell key={index}>{item.title}</TableCell>;
                 } else {
-                  return <TableCell align="right">{item}</TableCell>;
+                  return (
+                    <TableCell
+                      className={`${item.style}`}
+                      align="right"
+                      key={index}
+                    >
+                      {item.title}
+                    </TableCell>
+                  );
                 }
               })}
 
@@ -96,7 +124,6 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
               <TableRow
                 id="table-row"
                 onClick={() => {
-                  console.log("click id = " + row[0]);
                   props.onOpen?.(parseInt(row[0]));
                 }}
                 style={{ ...getStripedStyle(index) }}
@@ -106,6 +133,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                   if (index == 0) {
                     return (
                       <TableCell
+                        key={index}
                         align="left"
                         sx={{
                           maxWidth: "100px",
@@ -120,6 +148,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                   } else {
                     return (
                       <TableCell
+                        key={index}
                         align="right"
                         sx={{
                           maxWidth: "100px",

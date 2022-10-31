@@ -2,7 +2,10 @@ import CustomTable from "components/common/custom_table";
 import { ProductPayload } from "model/product_model";
 
 describe("Custom table test", () => {
-  const testTableColumn = ["Test1", "Test2"];
+  const testTableColumn = [
+    { title: "Test1", style: "" },
+    { title: "Test2", style: "" },
+  ];
   const data: Array<ProductPayload> = [
     {
       id: 1,
