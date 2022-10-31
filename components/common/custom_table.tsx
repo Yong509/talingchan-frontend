@@ -28,6 +28,14 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
   const getStripedStyle = (index: number) => {
     return { background: index % 2 ? "#f7f7f7" : "white" };
   };
+
+  const calculateTotalPrice = (data: Array<Array<string>>) => {
+    let total: number = 0;
+    data.map((item) => {
+      total += parseFloat(item[4]?.toString());
+    });
+    return total;
+  };
   return (
     <>
       <TableContainer component={Paper}>
@@ -59,7 +67,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                       fontWeight: "750",
                     }}
                   >
-                    10000 BAHT
+                    {calculateTotalPrice(props.data!)}
                   </Typography>
                 </div>
                 <div>
