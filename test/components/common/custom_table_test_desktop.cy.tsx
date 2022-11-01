@@ -8,22 +8,22 @@ describe("Custom table test", () => {
   ];
   const data: Array<ProductPayload> = [
     {
-      id: 1,
-      name: "Asdghfsjghfdjkgjihjisdobkmfsl;kvoivnodmivpmdsiofvsdij",
-      description: "B",
-      price: 500,
-      quantity: 3,
-      picture: "pic",
-      unit: "a",
+      PID: 1,
+      PName: "Asdghfsjghfdjkgjihjisdobkmfsl;kvoivnodmivpmdsiofvsdij",
+      PDescription: "B",
+      PPrice: 500,
+      PQuantity: 3,
+      PPicture: "pic",
+      PUnit: "a",
     },
     {
-      id: 30,
-      name: "A",
-      description: "B",
-      price: 500,
-      quantity: 3,
-      picture: "",
-      unit: "a",
+      PID: 30,
+      PName: "A",
+      PDescription: "B",
+      PPrice: 500,
+      PQuantity: 3,
+      PPicture: "",
+      PUnit: "a",
     },
   ];
 
@@ -34,7 +34,7 @@ describe("Custom table test", () => {
         <CustomTable
           tableHead={testTableColumn}
           data={data.map((item) => {
-            return [String(item.id), String(item.name)];
+            return [String(item.PID), String(item.PName)];
           })}
         />
       );
@@ -76,7 +76,7 @@ describe("Custom table test", () => {
           tableHead={testTableColumn}
           deleteAble={true}
           data={data.map((item) => {
-            return [String(item.id), String(item.name)];
+            return [String(item.PID), String(item.PName)];
           })}
         />
       );
