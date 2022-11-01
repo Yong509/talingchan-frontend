@@ -23,6 +23,7 @@ interface customTableProps {
   customer?: string;
   onOpen?: (id: number) => void;
   onDelete?: (product: string) => void;
+  onOrder?: (order: Array<Array<string>>) => void;
 }
 
 const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
@@ -75,6 +76,9 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                   <Button
                     type="submit"
                     variant="contained"
+                    onClick={() => {
+                      props.onOrder?.(props.data!);
+                    }}
                     sx={{
                       width: {
                         xs: "75px",

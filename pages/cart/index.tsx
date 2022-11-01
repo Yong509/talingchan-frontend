@@ -11,10 +11,11 @@ import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomDialog from "components/common/custom_dialog";
 import CustomTable from "components/common/custom_table";
-import { getCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { data } from "cypress/types/jquery";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
+import { InvoiceModel } from "model/invoice_model";
 import { ProductPayload } from "model/product_model";
 import { GetServerSideProps, NextPage } from "next";
 import router from "next/router";
@@ -46,6 +47,12 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [productName, setProductName] = useState<string>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+  const [cartOrder, setCartOrder] = useState<Array<Array<string>>>([[]]);
+
+  useState(() => {
+    setCookie("temp", dataProduct);
+  });
 
   const {
     register,
@@ -97,6 +104,18 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
   };
 
+  const handleCreateInvoice = async (cartOrderData: Array<Array<string>>) => {
+    let invoiceData: InvoiceModel = {
+      status: "Ordering",
+      customerId: 0,
+      employeeId: 1,
+    };
+
+    invoiceData.customerId = searchCustomer!.id;
+
+    console.log("invoice create ", invoiceData);
+  };
+
   return (
     <>
       <div className="bg-white">
@@ -136,6 +155,12 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomTable
             deleteAble={true}
             total={true}
+            onOrder={(data) => {
+              if (searchCustomer != undefined || searchCustomer) {
+                setOpenConfirmDialog(true);
+                setCartOrder(data);
+              }
+            }}
             onDelete={(product) => {
               setProductName(product);
               setOpenDialog(true);
@@ -245,6 +270,27 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             text: "confirm",
             color: "#F26161",
             fontColor: "white",
+          }}
+          onCancel={() => {
+            setOpenDialog(false);
+          }}
+        />
+
+        <CustomDialog
+          title={{
+            text: `Confirme Order`,
+            color: "black",
+          }}
+          content={`Are you sure you want to order?`}
+          open={openConfirmDialog}
+          cancelButton={{ text: "cancel", fontColor: "black" }}
+          confirmButton={{
+            text: "confirm",
+            color: "#F26161",
+            fontColor: "white",
+          }}
+          onConfirm={() => {
+            handleCreateInvoice(cartOrder);
           }}
           onCancel={() => {
             setOpenDialog(false);

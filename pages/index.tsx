@@ -11,7 +11,7 @@ import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 import { useRouter } from "next/router";
 import { CartModel } from "model/cart_model";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 
 interface pageProps {
   data?: Array<ProductPayload>;
@@ -78,9 +78,7 @@ const Home: NextPage = (props: pageProps) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
 
-  console.log(selectProduct);
   setCookie("selectProductCookies", JSON.stringify(selectProduct));
-
   const showData = () => {
     const data = props.data?.map((item, index) => {
       if (
