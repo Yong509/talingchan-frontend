@@ -1,7 +1,7 @@
-export interface LotPayload{
-    id: number,
-    date: string,
-    quantity: number,
-    unitId: number,
-    productId: number
+export interface LotPayload {
+  LotID: number;
+  LotDate: string;
+  LotQty: number;
+  UID: number;
+  PID: number;
 }

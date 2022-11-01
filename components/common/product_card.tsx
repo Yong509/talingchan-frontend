@@ -50,11 +50,11 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
             setErrorSelect(true);
           } else {
             props.onSelectProduct?.({
-              id: props.product.id,
-              name: props.product.name,
+              id: props.product.PID,
+              name: props.product.PName,
               quantity: selectQuantity,
-              pricePerUnit: props.product.price,
-              total: selectQuantity * props.product.price,
+              pricePerUnit: props.product.PPrice,
+              total: selectQuantity * props.product.PPrice,
             });
           }
         })}
@@ -77,7 +77,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
             <CardMedia
               id="product_img"
               component="img"
-              image={props.product.picture}
+              image={props.product.PPicture}
               sx={{ height: "295px", objectFit: "contain" }}
             />
             <Divider id="pic_detail_divider" sx={{ borderBottomWidth: 1 }} />
@@ -105,7 +105,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                   fontSize: "0.82rem",
                 }}
               >
-                Product ID: {props.product.id}
+                Product ID: {props.product.PID}
               </Typography>
               <Typography
                 id="product_name"
@@ -121,7 +121,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                   fontSize: "1.2rem",
                 }}
               >
-                {props.product.name}
+                {props.product.PName}
               </Typography>
               <Typography
                 id="product_description"
@@ -135,7 +135,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                   WebkitBoxOrient: "vertical",
                 }}
               >
-                {props.product.description}
+                {props.product.PDescription}
               </Typography>
               <Typography
                 id="product_price"
@@ -147,18 +147,18 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                   fontWeight: "750",
                 }}
               >
-                {props.product.price} BAHT
+                {props.product.PPrice} BAHT
               </Typography>
               <Typography
                 id="product_instock"
                 variant="body2"
-                color={props.product.quantity != 0 ? "#4caf50" : "#ff5722"}
+                color={props.product.PQuantity != 0 ? "#4caf50" : "#ff5722"}
                 sx={{
                   fontWeight: "750",
                 }}
               >
-                {props.product.quantity != 0
-                  ? `In Stock: ${props.product.quantity} ${props.product.unit}`
+                {props.product.PQuantity != 0
+                  ? `In Stock: ${props.product.PQuantity} ${props.product.PUnit}`
                   : `unavailable`}
               </Typography>
             </CardContent>
@@ -167,12 +167,12 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
               <div className="grid grid-cols-3 gap-x-5">
                 <div className="px-1 col-span-2" id="product_total">
                   <InputLabel sx={{ fontSize: { xs: "10px", md: "12px" } }}>
-                    {props.product.quantity != 0
-                      ? `In Stock: ${props.product.quantity} ${props.product.unit}`
+                    {props.product.PQuantity != 0
+                      ? `In Stock: ${props.product.PQuantity} ${props.product.PUnit}`
                       : `unavailable`}
                   </InputLabel>
                   <Select
-                    disabled={props.product.quantity != 0 ? false : true}
+                    disabled={props.product.PQuantity != 0 ? false : true}
                     id="select_quantity"
                     autoWidth
                     displayEmpty
@@ -204,11 +204,11 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                     <MenuItem key={"deselect_menuitem"} value={"deselect"}>
                       <em>None</em>
                     </MenuItem>
-                    {Array.from(Array(props.product.quantity).keys()).map(
+                    {Array.from(Array(props.product.PQuantity).keys()).map(
                       (item, index) => {
                         return (
                           <MenuItem key={`${index}_menuitem`} value={index}>
-                            {item + 1} {props.product.unit}
+                            {item + 1} {props.product.PUnit}
                           </MenuItem>
                         );
                       }
@@ -223,10 +223,10 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                       fontWeight: "750",
                     }}
                   >
-                    TOTAL {props.product.price * selectQuantity} BAHT
+                    TOTAL {props.product.PPrice * selectQuantity} BAHT
                   </Typography>
                 </div>
-                {props.product.quantity != 0 ? (
+                {props.product.PQuantity != 0 ? (
                   <div className="flex items-end place-content-end">
                     <Button
                       id="submit_button"

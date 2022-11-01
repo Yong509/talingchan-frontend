@@ -1,5 +1,5 @@
 export interface CustomerModel {
-  id: number;
-  name: string;
-  tel: string;
+  CID: number;
+  CName: string;
+  CTel: string;
 }
