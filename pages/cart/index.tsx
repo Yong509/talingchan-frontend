@@ -87,7 +87,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   console.log("cookie = ", dataProduct);
 
   const handleSearchCustomer = async (customer: string) => {
-    let data: CustomerModel = { id: 0, name: "", tel: "" };
+    let data: CustomerModel = { CID: 0, CName: "", CTel: "" };
     await axios
       .get(process.env.API_BASE_URL + "customers/" + customer)
       .then(function (response) {
@@ -165,7 +165,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               setProductName(product);
               setOpenDialog(true);
             }}
-            customer={searchCustomer?.name}
+            customer={searchCustomer?.CName}
             tableHead={[
               { title: "Product ID", style: "" },
               { title: "Product", style: "w-80" },
@@ -246,7 +246,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             severity="success"
             sx={{ width: "100%" }}
           >
-            Adding {searchCustomer?.name} successfully!
+            Adding {searchCustomer?.CName} successfully!
           </Alert>
         </Snackbar>
         <Snackbar

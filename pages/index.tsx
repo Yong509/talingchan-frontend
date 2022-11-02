@@ -21,6 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   let data: Array<ProductPayload> = [];
   let lotProduct: Array<LotPayload> = [];
   let unitProduct: Array<UnitPayload> = [];
+
   await axios
     .get(process.env.API_BASE_URL + "products")
     .then(function (response) {
@@ -50,16 +51,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   for (let index = 0; index < data.length; index++) {
     for (let j = 0; j < lotProduct.length; j++) {
-      if (data[index].id == lotProduct[j].productId) {
-        data[index].quantity = lotProduct[j].quantity;
+      if (data[index].PID == lotProduct[j].PID) {
+        data[index].PQuantity = lotProduct[j].LotQty;
       }
     }
   }
 
   for (let index = 0; index < lotProduct.length; index++) {
     for (let j = 0; j < unitProduct.length; j++) {
-      if (lotProduct[index].unitId == unitProduct[j].id) {
-        data[index].unit = unitProduct[j].detail;
+      if (lotProduct[index].UID == unitProduct[j].UID) {
+        data[index].PUnit = unitProduct[j].UDetail;
       }
     }
   }
@@ -78,24 +79,27 @@ const Home: NextPage = (props: pageProps) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
 
+  props.data?.map((item) => {
+    console.log("check = ", item.PName);
+  });
   setCookie("selectProductCookies", JSON.stringify(selectProduct));
   const showData = () => {
     const data = props.data?.map((item, index) => {
       if (
-        item.name.toUpperCase().includes(searchProduct.toUpperCase()) ||
-        searchProduct == item.id.toString()
+        item.PName.toUpperCase().includes(searchProduct.toUpperCase()) ||
+        searchProduct == item.PID.toString()
       ) {
         return (
-          <React.Fragment key={item.id}>
+          <React.Fragment key={item.PID}>
             <ProductCard
               product={{
-                id: item.id,
-                name: item.name,
-                description: item.description,
-                price: item.price,
-                quantity: item.quantity,
-                unit: item.unit,
-                picture: item.picture,
+                PID: item.PID,
+                PName: item.PName,
+                PDescription: item.PDescription,
+                PPrice: item.PPrice,
+                PQuantity: item.PQuantity,
+                PUnit: item.PUnit,
+                PPicture: item.PPicture,
               }}
               onSelectProduct={(product) => {
                 setSelectProduct((searchProduct) => [
@@ -184,16 +188,16 @@ const Home: NextPage = (props: pageProps) => {
             {searchProduct.length == 0
               ? props.data?.map((item, index) => {
                   return (
-                    <React.Fragment key={item.id}>
+                    <React.Fragment key={item.PID}>
                       <ProductCard
                         product={{
-                          id: item.id,
-                          name: item.name,
-                          description: item.description,
-                          price: item.price,
-                          quantity: item.quantity,
-                          unit: item.unit,
-                          picture: item.picture,
+                          PID: item.PID,
+                          PName: item.PName,
+                          PDescription: item.PDescription,
+                          PPrice: item.PPrice,
+                          PQuantity: item.PQuantity,
+                          PUnit: item.PUnit,
+                          PPicture: item.PPicture,
                         }}
                         onSelectProduct={(product) => {
                           handleClick(product);

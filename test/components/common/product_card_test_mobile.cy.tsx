@@ -3,27 +3,31 @@ import { ProductPayload } from "model/product_model";
 
 describe("Product card test", () => {
   const mockProductPayload: ProductPayload = {
-    id: 1,
-    name: "DR. EARTH ORGANIC AND NATURAL NATURAL WONDER® FRUIT TREE FERTILIZER 5-5-2",
-    description: `Natural Wonder® fertilizer is formulated to feed all fruit trees, berries, 
+    PID: 1,
+    PName:
+      "DR. EARTH ORGANIC AND NATURAL NATURAL WONDER® FRUIT TREE FERTILIZER 5-5-2",
+    PDescription: `Natural Wonder® fertilizer is formulated to feed all fruit trees, berries, 
       and fruiting vines in containers or any backyard soils. It can be used during the initial 
       transplanting after digging the hole or anytime of the year to feed actively growing fruit trees and vines.`,
-    price: 200,
-    quantity: 3,
-    unit: "KG",
-    picture: "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
+    PPrice: 200,
+    PQuantity: 3,
+    PUnit: "KG",
+    PPicture:
+      "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
   };
 
   const mockUnavailableProductPayload: ProductPayload = {
-    id: 1,
-    name: "DR. EARTH ORGANIC AND NATURAL NATURAL WONDER® FRUIT TREE FERTILIZER 5-5-2",
-    description: `Natural Wonder® fertilizer is formulated to feed all fruit trees, berries, 
+    PID: 1,
+    PName:
+      "DR. EARTH ORGANIC AND NATURAL NATURAL WONDER® FRUIT TREE FERTILIZER 5-5-2",
+    PDescription: `Natural Wonder® fertilizer is formulated to feed all fruit trees, berries, 
       and fruiting vines in containers or any backyard soils. It can be used during the initial 
       transplanting after digging the hole or anytime of the year to feed actively growing fruit trees and vines.`,
-    price: 200,
-    quantity: 0,
-    unit: "KG",
-    picture: "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
+    PPrice: 200,
+    PQuantity: 0,
+    PUnit: "KG",
+    PPicture:
+      "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
   };
 
   context("Product card available Desktop resolution", () => {
