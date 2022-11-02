@@ -49,15 +49,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(error);
     });
 
-  for (let index = 0; index < data.length; index++) {
-    let total: number = 0;
-    for (let j = 0; j < lotProduct.length; j++) {
-      if (data[index].PID == lotProduct[j].PID) {
-        total += lotProduct[j].LotQty;
-      }
-    }
-    data[index].PQuantity = total;
-  }
+  // for (let index = 0; index < data.length; index++) {
+  //   let total: number = 0;
+  //   for (let j = 0; j < lotProduct.length; j++) {
+  //     if (data[index].PID == lotProduct[j].PID) {
+  //       total += lotProduct[j].LotQty;
+  //     }
+  //   }
+  //   data[index].PQuantity = total;
+  // }
 
   // for (let index = 0; index < data.length; index++) {
   //   let tempUID: number = 0;
