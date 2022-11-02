@@ -59,19 +59,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     data[index].PQuantity = total;
   }
 
-  for (let index = 0; index < data.length; index++) {
-    let tempUID: number = 0;
-    for (let j = 0; j < lotProduct.length; j++) {
-      if (data[index].PID == lotProduct[j].PID) {
-        tempUID = lotProduct[j].UID;
-        for (let k = 0; k < unitProduct.length; k++) {
-          if (unitProduct[k].UID == tempUID) {
-            data[index].PUnit = unitProduct[k].UDetail;
-          }
-        }
-      }
-    }
-  }
+  // for (let index = 0; index < data.length; index++) {
+  //   let tempUID: number = 0;
+  //   for (let j = 0; j < lotProduct.length; j++) {
+  //     if (data[index].PID == lotProduct[j].PID) {
+  //       tempUID = lotProduct[j].UID;
+  //       for (let k = 0; k < unitProduct.length; k++) {
+  //         if (unitProduct[k].UID == tempUID) {
+  //           data[index].PUnit = unitProduct[k].UDetail;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   return {
     props: {
       data,
