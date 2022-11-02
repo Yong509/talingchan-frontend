@@ -15,6 +15,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { data } from "cypress/types/jquery";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
+import { InvoiceDetailCreateModel } from "model/invoice_detail_model";
 import { InvoiceCreateModel } from "model/invoice_model";
 import { LotPayload } from "model/lot_model";
 import { ProductPayload } from "model/product_model";
@@ -47,15 +48,15 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [open, setOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const [errorCustomerOpen, setErrorCustomerOpen] = useState(false);
-  const [productName, setProductName] = useState<string>();
+  const [deleteProductName, setDeleteProductName] = useState<string>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [cartOrder, setCartOrder] = useState<Array<Array<string>>>([[]]);
   const [createInvoiceAlert, setCreateInvoiceAlert] = useState<boolean>(false);
-
-  useState(() => {
-    setCookie("temp", dataProduct);
-  });
+  const [dataProductCart, setDataProductCart] = useState<
+    Array<CartModel> | undefined
+  >(dataProduct);
+  const [invoiceID, setInvoiceID] = useState<number>(0);
 
   const {
     register,
@@ -104,8 +105,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     setCreateInvoiceAlert(false);
   };
 
-  console.log("cookie = ", dataProduct);
-
   const handleSearchCustomer = async (customer: string) => {
     let data: CustomerModel = { CID: 0, CName: "", CTel: "" };
     await axios
@@ -124,28 +123,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
   };
 
-  const findOldestLot = async () => {
-    let lotData: Array<LotPayload> = [];
-    await axios
-      .get(process.env.API_BASE_URL + "lots")
-      .then(function (response) {
-        lotData = response.data;
-        // console.log("lot = ", lotData);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    let lastDate = new Date();
-    lotData.map((item) => {
-      let dateISO = new Date(item.LotDate);
-      if (dateISO.getTime() < lastDate.getTime()) {
-        lastDate = dateISO;
-      }
-    });
-
-    console.log("oldest day = ", lastDate);
-  };
-
   const handleCreateInvoice = async (cartOrderData: Array<Array<string>>) => {
     let invoiceData: InvoiceCreateModel = {
       IStatus: "Preorder",
@@ -157,16 +134,48 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
 
     console.log("invoice create ", invoiceData);
 
-    // await axios
-    //   .post(process.env.API_BASE_URL + "invoices", invoiceData)
-    //   .then(function (response) {
-    //     handleCreateInvoiceAlert();
-    //     setOpenConfirmDialog(false);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-    console.log(cartOrder);
+    await axios
+      .post(process.env.API_BASE_URL + "invoices", invoiceData)
+      .then(function (response) {
+        handleCreateInvoiceAlert();
+        setInvoiceID(response.data.createdInvoice.IID);
+        setOpenConfirmDialog(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    let lotData: Array<LotPayload> = [];
+
+    await axios
+      .get(process.env.API_BASE_URL + "lots")
+      .then(function (response) {
+        lotData = response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    for (let index = 0; index < cartOrderData.length; index++) {
+      let oldestLot = lotData.find((lot) => {
+        return lot.PID.toString() == cartOrderData[index][0];
+      });
+      let dataInvoiceDetail: InvoiceDetailCreateModel = {
+        quantity: parseInt(cartOrderData[index][2]),
+        price: cartOrderData[index][4],
+        invoiceId: invoiceID,
+        lotId: oldestLot!.LotID,
+        unitId: oldestLot!.UID,
+      };
+      await axios
+        .post(process.env.API_BASE_URL + "invoiceDetail", dataInvoiceDetail)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   };
 
   return (
@@ -217,7 +226,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               }
             }}
             onDelete={(product) => {
-              setProductName(product);
+              setDeleteProductName(product);
               setOpenDialog(true);
             }}
             customer={searchCustomer?.CName}
@@ -228,7 +237,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               { title: "Price per Unit", style: "" },
               { title: "Total", style: "" },
             ]}
-            data={dataProduct?.map((item) => {
+            data={dataProductCart?.map((item) => {
               return [
                 String(item.id),
                 String(item.name),
@@ -337,10 +346,10 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
         </Snackbar>
         <CustomDialog
           title={{
-            text: `Remove ${productName} out of cart.`,
+            text: `Remove ${deleteProductName} out of cart.`,
             color: "#F26161",
           }}
-          content={`Are you sure you want to remove ${productName} out of your cart?`}
+          content={`Are you sure you want to remove ${deleteProductName} out of your cart?`}
           open={openDialog}
           cancelButton={{ text: "cancel", fontColor: "black" }}
           confirmButton={{
@@ -349,6 +358,16 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             fontColor: "white",
           }}
           onCancel={() => {
+            setOpenDialog(false);
+          }}
+          onConfirm={() => {
+            let product = dataProduct?.filter((item) => {
+              if (deleteProductName != item.name) {
+                return item;
+              }
+            });
+            setCookie("selectProductCookies", JSON.stringify(product));
+            setDataProductCart(product);
             setOpenDialog(false);
           }}
         />
