@@ -13,7 +13,8 @@ const Login: NextPage = (props) => {
                     <CustomAppBar
                         title="Talingchan Fertilizer"
                         id={"LoginBar"}
-                    /><div className="pt-44">
+                    />
+                    <div className="pt-44">
                     </div>
                     <div className="body-login">
                         <Box

@@ -14,6 +14,7 @@ import Container from '@mui/material/Container';
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Employee } from 'model/employee_model';
 
 
 const LoginForm: React.FC = () => {
@@ -30,7 +31,7 @@ const LoginForm: React.FC = () => {
         },
     });
 
-    const [searchValue, setSearchValue] = useState<string>();
+    const [value, setValue] = useState<string>();
     const {
         register,
         handleSubmit,
@@ -39,6 +40,18 @@ const LoginForm: React.FC = () => {
         clearErrors,
         reset,
     } = useForm();
+
+    const employee : Employee = {
+        EmpID : watch('EmpID'),
+        EmpPassword : watch('Password')
+    }
+
+    function onSubmit(e:any){
+        setValue(e.value);
+        console.log(employee);
+
+        // connect to db & set validation
+    }
 
     return (
         <>
@@ -58,8 +71,7 @@ const LoginForm: React.FC = () => {
                         </Typography>
                         <Box component="form"
                             onSubmit={handleSubmit((e) => {
-                                setSearchValue(e.search_input);
-                                console.log('Hello form login submit');
+                                onSubmit(e);
                             })}
                             noValidate
                             sx={{ mt: 1 }}>
@@ -70,35 +82,33 @@ const LoginForm: React.FC = () => {
                                 fullWidth
                                 id="EmpID"
                                 label="Employee ID"
-                                // name="email"
-                                autoComplete="empID"
-                                {...register("empID", {
+                                autoComplete="EmpID"
+                                {...register("EmpID", {
                                     required: "Can not be empty",
                                   })}
                                   onBlur={() => {
-                                    clearErrors("empID")
+                                    clearErrors("EmpID")
                                   }}
-                                helperText={errors.empID?.message?.toString()}
-                                error={errors.search_input?.message ? true : false}
+                                helperText={errors.EmpID?.message?.toString()}
+                                error={errors.EmpID?.message ? true : false}
                             />
                             <TextField
                                 margin="normal"
                                 required
                                 fullWidth
-                                // name="password"
                                 label="Password"
                                 type="password"
-                                id="password"
+                                id="Password"
                                 autoComplete="current-password"
                                 autoFocus
-                                {...register("password", {
+                                {...register("Password", {
                                     required: "Can not be empty",
                                   })}
                                   onBlur={() => {
-                                    clearErrors("password")
+                                    clearErrors("Password")
                                   }}
-                                helperText = {errors.password?.message?.toString()}
-                                error={errors.search_input?.message ? true : false}
+                                helperText = {errors.Password?.message?.toString()}
+                                error={errors.Password?.message ? true : false}
                             />
 
 
