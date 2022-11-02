@@ -80,7 +80,7 @@ const Home: NextPage = (props: pageProps) => {
   const [addProduct, setAddProduct] = useState<CartModel>();
 
   props.data?.map((item) => {
-    console.log(item.PName);
+    console.log("check = ", item.PName);
   });
   setCookie("selectProductCookies", JSON.stringify(selectProduct));
 
