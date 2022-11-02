@@ -6,3 +6,22 @@
     display: flex;
     flex-direction: row;
 }
+
+.add-customer-body{
+    text-align: center;
+}
+
+.add-customer-body>div{
+    text-align: left;
+    padding: 4em;
+
+}
+
+.add-customer-heading {
+    font-size: 2em;
+    margin-bottom: 0.5em;
+}
+
+.add-customer-subheading {
+    color : gray;
+}
