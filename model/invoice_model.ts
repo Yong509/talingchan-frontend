@@ -1,5 +1,5 @@
-export interface InvoiceModel {
-  status: string;
-  customerId: number;
-  employeeId: number;
+export interface InvoiceCreateModel {
+  IStatus: string;
+  CID: number;
+  EmpID: number;
 }

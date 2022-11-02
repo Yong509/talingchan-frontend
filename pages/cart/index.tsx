@@ -15,7 +15,8 @@ import { getCookie, setCookie } from "cookies-next";
 import { data } from "cypress/types/jquery";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
-import { InvoiceModel } from "model/invoice_model";
+import { InvoiceCreateModel } from "model/invoice_model";
+import { LotPayload } from "model/lot_model";
 import { ProductPayload } from "model/product_model";
 import { GetServerSideProps, NextPage } from "next";
 import router from "next/router";
@@ -45,10 +46,12 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [searchCustomer, setSearchCustomer] = useState<CustomerModel>();
   const [open, setOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
+  const [errorCustomerOpen, setErrorCustomerOpen] = useState(false);
   const [productName, setProductName] = useState<string>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [cartOrder, setCartOrder] = useState<Array<Array<string>>>([[]]);
+  const [createInvoiceAlert, setCreateInvoiceAlert] = useState<boolean>(false);
 
   useState(() => {
     setCookie("temp", dataProduct);
@@ -65,12 +68,27 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
 
   const handleClick = () => {
     setErrorOpen(false);
+    setErrorCustomerOpen(false);
     setOpen(true);
   };
 
   const handleError = () => {
     setOpen(false);
+    setErrorCustomerOpen(false);
     setErrorOpen(true);
+  };
+
+  const handleErrorCustomer = () => {
+    setOpen(false);
+    setErrorOpen(false);
+    setErrorCustomerOpen(true);
+  };
+
+  const handleCreateInvoiceAlert = () => {
+    setOpen(false);
+    setErrorOpen(false);
+    setErrorCustomerOpen(false);
+    setCreateInvoiceAlert(true);
   };
 
   const handleClose = (
@@ -82,6 +100,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
     setOpen(false);
     setErrorOpen(false);
+    setErrorCustomerOpen(false);
+    setCreateInvoiceAlert(false);
   };
 
   console.log("cookie = ", dataProduct);
@@ -104,16 +124,49 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
   };
 
+  const findOldestLot = async () => {
+    let lotData: Array<LotPayload> = [];
+    await axios
+      .get(process.env.API_BASE_URL + "lots")
+      .then(function (response) {
+        lotData = response.data;
+        // console.log("lot = ", lotData);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    let lastDate = new Date();
+    lotData.map((item) => {
+      let dateISO = new Date(item.LotDate);
+      if (dateISO.getTime() < lastDate.getTime()) {
+        lastDate = dateISO;
+      }
+    });
+
+    console.log("oldest day = ", lastDate);
+  };
+
   const handleCreateInvoice = async (cartOrderData: Array<Array<string>>) => {
-    let invoiceData: InvoiceModel = {
-      status: "Ordering",
-      customerId: 0,
-      employeeId: 1,
+    let invoiceData: InvoiceCreateModel = {
+      IStatus: "Preorder",
+      CID: 0,
+      EmpID: 1,
     };
 
-    invoiceData.customerId = searchCustomer!.id;
+    invoiceData.CID = searchCustomer!.CID;
 
     console.log("invoice create ", invoiceData);
+
+    // await axios
+    //   .post(process.env.API_BASE_URL + "invoices", invoiceData)
+    //   .then(function (response) {
+    //     handleCreateInvoiceAlert();
+    //     setOpenConfirmDialog(false);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
+    console.log(cartOrder);
   };
 
   return (
@@ -159,6 +212,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               if (searchCustomer != undefined || searchCustomer) {
                 setOpenConfirmDialog(true);
                 setCartOrder(data);
+              } else {
+                handleErrorCustomer();
               }
             }}
             onDelete={(product) => {
@@ -250,12 +305,34 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           </Alert>
         </Snackbar>
         <Snackbar
+          open={createInvoiceAlert}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert
+            onClose={handleClose}
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            Create invoice successfully!
+          </Alert>
+        </Snackbar>
+        <Snackbar
           open={errorOpen}
           autoHideDuration={3000}
           onClose={handleClose}
         >
           <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
             Not found
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={errorCustomerOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
+            Please add customer to order
           </Alert>
         </Snackbar>
         <CustomDialog
@@ -293,7 +370,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             handleCreateInvoice(cartOrder);
           }}
           onCancel={() => {
-            setOpenDialog(false);
+            setOpenConfirmDialog(false);
           }}
         />
       </div>
