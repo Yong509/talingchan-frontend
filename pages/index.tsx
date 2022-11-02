@@ -26,7 +26,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .get(process.env.API_BASE_URL + "products")
     .then(function (response) {
       data = response.data.products;
-      console.log("product = " + response.data.products);
     })
     .catch(function (error) {
       console.log(error);
@@ -80,6 +79,9 @@ const Home: NextPage = (props: pageProps) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
 
+  props.data?.map((item) => {
+    console.log(item.PName);
+  });
   setCookie("selectProductCookies", JSON.stringify(selectProduct));
 
   const showData = () => {
