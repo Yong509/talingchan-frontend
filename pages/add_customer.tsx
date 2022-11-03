@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 import { useRouter } from "next/router";
 
 
-const addCustomer: NextPage = (props) => {
+const AddCustomer: NextPage = (props) => {
 
     const router = useRouter();
 
@@ -30,4 +30,4 @@ const addCustomer: NextPage = (props) => {
     )
 }
 
-export default addCustomer;
+export default AddCustomer;

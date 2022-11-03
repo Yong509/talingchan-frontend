@@ -7,7 +7,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import { Customer } from "model/customer_model";
 import axios from "axios";
 
-const addCustomerForm: React.FC = () => {
+const AddCustomerForm: React.FC = () => {
   const [value, setValue] = useState<string>();
   const {
     register,
@@ -148,4 +148,4 @@ const addCustomerForm: React.FC = () => {
   );
 };
 
-export default addCustomerForm;
+export default AddCustomerForm;
