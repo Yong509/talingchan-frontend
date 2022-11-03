@@ -87,10 +87,13 @@ const Home: NextPage = (props: pageProps) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
 
-  props.data?.map((item) => {
-    console.log("check = ", item.PName);
-  });
-  setCookie("selectProductCookies", JSON.stringify(selectProduct));
+  useEffect(() => {
+    let dataProduct: Array<CartModel> = getCookie("selectProductCookies")
+      ? JSON.parse(getCookie("selectProductCookies")!.toString())
+      : [];
+    setSelectProduct(dataProduct);
+  }, []);
+
   const showData = () => {
     const data = props.data?.map((item, index) => {
       if (
@@ -209,10 +212,24 @@ const Home: NextPage = (props: pageProps) => {
                         }}
                         onSelectProduct={(product) => {
                           handleClick(product);
-                          setSelectProduct((searchProduct) => [
-                            ...searchProduct,
-                            product,
-                          ]);
+
+                          let haveItem = false;
+                          let newProduct = selectProduct.map((item) => {
+                            if (item.name == product.name) {
+                              item.quantity += product.quantity;
+                              haveItem = true;
+                              return item;
+                            }
+                            return item;
+                          });
+                          if (!haveItem) {
+                            newProduct = [...newProduct, product];
+                          }
+                          setCookie(
+                            "selectProductCookies",
+                            JSON.stringify(newProduct)
+                          );
+                          setSelectProduct(newProduct);
                         }}
                       />
                     </React.Fragment>

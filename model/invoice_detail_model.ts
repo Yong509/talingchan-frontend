@@ -1,7 +1,7 @@
-export interface InvoiceDetail {
-  quantity: number;
-  price: string;
-  unitId: number;
-  invoiceId: number;
-  lotId: number;
+export interface InvoiceDetailCreateModel {
+  INVQty: number;
+  INVPrice: string;
+  UID: number;
+  IID: number;
+  LotID: number;
 }

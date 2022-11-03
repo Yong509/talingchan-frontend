@@ -5,8 +5,9 @@ import {
   Typography,
   Alert,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
-
 import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomDialog from "components/common/custom_dialog";
@@ -15,6 +16,7 @@ import { getCookie, setCookie } from "cookies-next";
 import { data } from "cypress/types/jquery";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
+import { InvoiceDetailCreateModel } from "model/invoice_detail_model";
 import { InvoiceCreateModel } from "model/invoice_model";
 import { LotPayload } from "model/lot_model";
 import { ProductPayload } from "model/product_model";
@@ -47,16 +49,17 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [open, setOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const [errorCustomerOpen, setErrorCustomerOpen] = useState(false);
-  const [productName, setProductName] = useState<string>();
+  const [deleteProductName, setDeleteProductName] = useState<string>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [cartOrder, setCartOrder] = useState<Array<Array<string>>>([[]]);
   const [createInvoiceAlert, setCreateInvoiceAlert] = useState<boolean>(false);
-
-  useState(() => {
-    setCookie("temp", dataProduct);
-  });
-
+  const [dataProductCart, setDataProductCart] = useState<
+    Array<CartModel> | undefined
+  >(dataProduct);
+  const [invoiceID, setInvoiceID] = useState<number>(0);
+  const [completeSnack, setCompleteSnack] = useState<boolean>(false);
+  const [backdrop, setBackdrop] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -104,8 +107,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     setCreateInvoiceAlert(false);
   };
 
-  console.log("cookie = ", dataProduct);
-
   const handleSearchCustomer = async (customer: string) => {
     let data: CustomerModel = { CID: 0, CName: "", CTel: "" };
     await axios
@@ -124,29 +125,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
   };
 
-  const findOldestLot = async () => {
-    let lotData: Array<LotPayload> = [];
-    await axios
-      .get(process.env.API_BASE_URL + "lots")
-      .then(function (response) {
-        lotData = response.data;
-        // console.log("lot = ", lotData);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    let lastDate = new Date();
-    lotData.map((item) => {
-      let dateISO = new Date(item.LotDate);
-      if (dateISO.getTime() < lastDate.getTime()) {
-        lastDate = dateISO;
-      }
-    });
-
-    console.log("oldest day = ", lastDate);
-  };
-
   const handleCreateInvoice = async (cartOrderData: Array<Array<string>>) => {
+    setBackdrop(true);
     let invoiceData: InvoiceCreateModel = {
       IStatus: "Preorder",
       CID: 0,
@@ -154,19 +134,50 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     };
 
     invoiceData.CID = searchCustomer!.CID;
+    await axios
+      .post(process.env.API_BASE_URL + "invoices", invoiceData)
+      .then(function (response) {
+        handleCreateInvoiceAlert();
+        setInvoiceID(response.data.createdInvoice.IID);
+        setOpenConfirmDialog(false);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
-    console.log("invoice create ", invoiceData);
+    let lotData: Array<LotPayload> = [];
 
-    // await axios
-    //   .post(process.env.API_BASE_URL + "invoices", invoiceData)
-    //   .then(function (response) {
-    //     handleCreateInvoiceAlert();
-    //     setOpenConfirmDialog(false);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-    console.log(cartOrder);
+    await axios
+      .get(process.env.API_BASE_URL + "lots")
+      .then(function (response) {
+        lotData = response.data;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+    for (let index = 0; index < cartOrderData.length; index++) {
+      let oldestLot = lotData.find((lot) => {
+        return lot.PID.toString() == cartOrderData[index][0];
+      });
+      let dataInvoiceDetail: InvoiceDetailCreateModel = {
+        INVQty: parseInt(cartOrderData[index][2]),
+        INVPrice: cartOrderData[index][4],
+        UID: oldestLot!.UID,
+        IID: invoiceID,
+        LotID: oldestLot!.LotID,
+      };
+      await axios
+        .post(process.env.API_BASE_URL + "invoiceDetails", dataInvoiceDetail)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+    setCompleteSnack(true);
+    setBackdrop(false);
   };
 
   return (
@@ -217,7 +228,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               }
             }}
             onDelete={(product) => {
-              setProductName(product);
+              setDeleteProductName(product);
               setOpenDialog(true);
             }}
             customer={searchCustomer?.CName}
@@ -228,7 +239,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               { title: "Price per Unit", style: "" },
               { title: "Total", style: "" },
             ]}
-            data={dataProduct?.map((item) => {
+            data={dataProductCart?.map((item) => {
               return [
                 String(item.id),
                 String(item.name),
@@ -337,10 +348,10 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
         </Snackbar>
         <CustomDialog
           title={{
-            text: `Remove ${productName} out of cart.`,
+            text: `Remove ${deleteProductName} out of cart.`,
             color: "#F26161",
           }}
-          content={`Are you sure you want to remove ${productName} out of your cart?`}
+          content={`Are you sure you want to remove ${deleteProductName} out of your cart?`}
           open={openDialog}
           cancelButton={{ text: "cancel", fontColor: "black" }}
           confirmButton={{
@@ -351,8 +362,17 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           onCancel={() => {
             setOpenDialog(false);
           }}
+          onConfirm={() => {
+            let product = dataProduct?.filter((item) => {
+              if (deleteProductName != item.name) {
+                return item;
+              }
+            });
+            setCookie("selectProductCookies", JSON.stringify(product));
+            setDataProductCart(product);
+            setOpenDialog(false);
+          }}
         />
-
         <CustomDialog
           title={{
             text: `Confirme Order`,
@@ -368,11 +388,28 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           }}
           onConfirm={() => {
             handleCreateInvoice(cartOrder);
+            setOpenConfirmDialog(false);
           }}
           onCancel={() => {
             setOpenConfirmDialog(false);
           }}
         />
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <Snackbar
+          open={errorCustomerOpen}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        >
+          <Alert variant="filled" severity="success">
+            This is a success alert — check it out!
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
