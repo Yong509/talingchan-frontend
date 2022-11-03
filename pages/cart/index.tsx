@@ -5,8 +5,9 @@ import {
   Typography,
   Alert,
   Snackbar,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
-
 import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomDialog from "components/common/custom_dialog";
@@ -57,7 +58,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     Array<CartModel> | undefined
   >(dataProduct);
   const [invoiceID, setInvoiceID] = useState<number>(0);
-
+  const [completeSnack, setCompleteSnack] = useState<boolean>(false);
+  const [backdrop, setBackdrop] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -124,6 +126,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   };
 
   const handleCreateInvoice = async (cartOrderData: Array<Array<string>>) => {
+    setBackdrop(true);
     let invoiceData: InvoiceCreateModel = {
       IStatus: "Preorder",
       CID: 0,
@@ -131,9 +134,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     };
 
     invoiceData.CID = searchCustomer!.CID;
-
-    console.log("invoice create ", invoiceData);
-
     await axios
       .post(process.env.API_BASE_URL + "invoices", invoiceData)
       .then(function (response) {
@@ -161,14 +161,14 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
         return lot.PID.toString() == cartOrderData[index][0];
       });
       let dataInvoiceDetail: InvoiceDetailCreateModel = {
-        quantity: parseInt(cartOrderData[index][2]),
-        price: cartOrderData[index][4],
-        invoiceId: invoiceID,
-        lotId: oldestLot!.LotID,
-        unitId: oldestLot!.UID,
+        INVQty: parseInt(cartOrderData[index][2]),
+        INVPrice: cartOrderData[index][4],
+        UID: oldestLot!.UID,
+        IID: invoiceID,
+        LotID: oldestLot!.LotID,
       };
       await axios
-        .post(process.env.API_BASE_URL + "invoiceDetail", dataInvoiceDetail)
+        .post(process.env.API_BASE_URL + "invoiceDetails", dataInvoiceDetail)
         .then(function (response) {
           console.log(response.data);
         })
@@ -176,6 +176,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           console.log(error);
         });
     }
+    setCompleteSnack(true);
+    setBackdrop(false);
   };
 
   return (
@@ -371,7 +373,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             setOpenDialog(false);
           }}
         />
-
         <CustomDialog
           title={{
             text: `Confirme Order`,
@@ -387,11 +388,28 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           }}
           onConfirm={() => {
             handleCreateInvoice(cartOrder);
+            setOpenConfirmDialog(false);
           }}
           onCancel={() => {
             setOpenConfirmDialog(false);
           }}
         />
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+        <Snackbar
+          open={errorCustomerOpen}
+          autoHideDuration={2000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        >
+          <Alert variant="filled" severity="success">
+            This is a success alert — check it out!
+          </Alert>
+        </Snackbar>
       </div>
     </>
   );
