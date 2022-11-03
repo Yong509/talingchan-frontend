@@ -12,7 +12,7 @@ import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomDialog from "components/common/custom_dialog";
 import CustomTable from "components/common/custom_table";
-import { getCookie, setCookie } from "cookies-next";
+import { getCookie, removeCookies, setCookie } from "cookies-next";
 import { data } from "cypress/types/jquery";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
@@ -58,7 +58,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     Array<CartModel> | undefined
   >(dataProduct);
   const [invoiceID, setInvoiceID] = useState<number>(0);
-  const [completeSnack, setCompleteSnack] = useState<boolean>(false);
   const [backdrop, setBackdrop] = useState<boolean>(false);
   const {
     register,
@@ -137,7 +136,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     await axios
       .post(process.env.API_BASE_URL + "invoices", invoiceData)
       .then(function (response) {
-        handleCreateInvoiceAlert();
         setInvoiceID(response.data.createdInvoice.IID);
         setOpenConfirmDialog(false);
       })
@@ -176,7 +174,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           console.log(error);
         });
     }
-    setCompleteSnack(true);
+    removeCookies("selectProductCookies");
     setBackdrop(false);
   };
 
@@ -319,6 +317,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           open={createInvoiceAlert}
           autoHideDuration={3000}
           onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
         >
           <Alert
             onClose={handleClose}
@@ -400,16 +399,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
         >
           <CircularProgress color="inherit" />
         </Backdrop>
-        <Snackbar
-          open={errorCustomerOpen}
-          autoHideDuration={2000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        >
-          <Alert variant="filled" severity="success">
-            This is a success alert — check it out!
-          </Alert>
-        </Snackbar>
       </div>
     </>
   );
