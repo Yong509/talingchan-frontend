@@ -7,21 +7,21 @@
     flex-direction: row;
 }
 
-.add-customer-body{
+.add-body{
     text-align: center;
 }
 
-.add-customer-body>div{
+.add-body>div{
     text-align: left;
     padding: 4em;
 
 }
 
-.add-customer-heading {
+.add-heading {
     font-size: 2em;
     margin-bottom: 0.5em;
 }
 
-.add-customer-subheading {
+.add-subheading {
     color : gray;
 }
