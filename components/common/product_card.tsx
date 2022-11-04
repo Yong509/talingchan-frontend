@@ -12,6 +12,8 @@ import {
   FormControl,
   OutlinedInput,
   SelectChangeEvent,
+  FormHelperText,
+  InputAdornment,
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { height } from "@mui/system";
@@ -20,6 +22,7 @@ import { useState } from "react";
 import { render } from "react-dom";
 import { useForm } from "react-hook-form";
 import { CartModel } from "model/cart_model";
+import { BorderColor } from "@mui/icons-material";
 
 interface productCardProps {
   product: ProductPayload;
@@ -29,7 +32,7 @@ interface productCardProps {
 const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
   const [selectQuantity, setSelectQuantity] = useState<number>(0);
   const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
-  const [errorSelect, setErrorSelect] = useState<boolean>(false);
+  const [errorQuantity, setErrorQuantity] = useState<boolean>(false);
 
   const {
     register,
@@ -47,8 +50,9 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
         onSubmit={handleSubmit((e) => {
           const tempSelectProduct: CartModel[] = selectProduct;
           if (selectQuantity == 0) {
-            setErrorSelect(true);
+            setErrorQuantity(true);
           } else {
+            setErrorQuantity(false);
             props.onSelectProduct?.({
               id: props.product.PID,
               name: props.product.PName,
@@ -152,13 +156,13 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
               <Typography
                 id="product_instock"
                 variant="body2"
-                color={props.product.PQuantity != 0 ? "#4caf50" : "#ff5722"}
+                color={props.product.PInStock != 0 ? "#4caf50" : "#ff5722"}
                 sx={{
                   fontWeight: "750",
                 }}
               >
-                {props.product.PQuantity != 0
-                  ? `In Stock: ${props.product.PQuantity} ${props.product.PUnit}`
+                {props.product.PInStock != 0
+                  ? `In Stock: ${props.product.PInStock} ${props.product.PUnit}`
                   : `unavailable`}
               </Typography>
             </CardContent>
@@ -167,53 +171,86 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
               <div className="grid grid-cols-3 gap-x-5">
                 <div className="px-1 col-span-2" id="product_total">
                   <InputLabel sx={{ fontSize: { xs: "10px", md: "12px" } }}>
-                    {props.product.PQuantity != 0
-                      ? `In Stock: ${props.product.PQuantity} ${props.product.PUnit}`
+                    {props.product.PInStock != 0
+                      ? `In Stock: ${props.product.PInStock} ${props.product.PUnit}`
                       : `unavailable`}
                   </InputLabel>
-                  <Select
-                    disabled={props.product.PQuantity != 0 ? false : true}
-                    id="select_quantity"
-                    autoWidth
-                    displayEmpty
-                    defaultValue="deselect"
-                    sx={{
-                      minWidth: "190px",
-                      height: 34,
-                      fontSize: { xs: "10px", md: "12px" },
-                    }}
-                    error={errorSelect}
-                    {...register("select_quantity", {
-                      validate: (value) => {
-                        if (value + 1 == 0) {
-                          setErrorSelect(true);
-                          return "Error";
+                  <div className="flex flex-row">
+                    <Button
+                      id="decrease-button"
+                      onClick={() => {
+                        selectQuantity <= 0
+                          ? setSelectQuantity(0)
+                          : setSelectQuantity(selectQuantity - 1);
+                      }}
+                      style={{
+                        maxWidth: "90px",
+                        backgroundColor: "#EBEBEB",
+                        height: 34,
+                        borderRadius: 0,
+                        color: "#000000",
+                      }}
+                      sx={{
+                        boxShadow: 0,
+                      }}
+                      variant="contained"
+                    >
+                      -
+                    </Button>
+                    <OutlinedInput
+                      size="small"
+                      value={selectQuantity}
+                      inputProps={{
+                        style: {
+                          textAlign: "center",
+                        },
+                      }}
+                      sx={{
+                        maxWidth: "90px",
+                        height: 34,
+                        borderRadius: 0,
+                        fontSize: { xs: "10px", md: "12px" },
+                      }}
+                      error={errorQuantity}
+                      id="quantity-input"
+                      onChange={(e) => {
+                        if (
+                          parseInt(e.target.value) < 0 ||
+                          !e.target.value ||
+                          e.target.value == undefined || isNaN(parseInt(e.target.value))
+                        ) {
+                          setSelectQuantity(0);
+                        } else if (
+                          parseInt(e.target.value) >= props.product.PInStock
+                        ) {
+                          setSelectQuantity(props.product.PInStock);
                         } else {
-                          setErrorSelect(false);
+                          setSelectQuantity(parseInt(e.target.value));
                         }
-                      },
-                    })}
-                    onChange={(e) => {
-                      if (e.target.value == "deselect") {
-                        setSelectQuantity(0);
-                      } else {
-                        setSelectQuantity(parseInt(e.target.value + 1));
-                      }
-                    }}
-                  >
-                    <MenuItem key={"deselect_menuitem"} value={"deselect"}>
-                      <em>None</em>
-                    </MenuItem>
-                    {Array.from(Array(props.product.PQuantity).keys()).map(
-                      (item, index) => {
-                        return (
-                          <MenuItem key={`${index}_menuitem`} value={index}>
-                            {item + 1} {props.product.PUnit}
-                          </MenuItem>
-                        );
-                      }
-                    )}
-                  </Select>
+                      }}
+                    />
+                    <Button
+                      id="increase-button"
+                      onClick={() => {
+                        selectQuantity >= props.product.PInStock
+                          ? setSelectQuantity(props.product.PInStock)
+                          : setSelectQuantity(selectQuantity + 1);
+                      }}
+                      style={{
+                        width: 20,
+                        backgroundColor: "#EBEBEB",
+                        height: 34,
+                        borderRadius: 0,
+                        color: "#000000",
+                      }}
+                      sx={{
+                        boxShadow: 0,
+                      }}
+                      variant="contained"
+                    >
+                      +
+                    </Button>
+                  </div>
                   <Typography
                     id="total_price"
                     variant="body1"
@@ -226,7 +263,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                     TOTAL {props.product.PPrice * selectQuantity} BAHT
                   </Typography>
                 </div>
-                {props.product.PQuantity != 0 ? (
+                {props.product.PInStock != 0 ? (
                   <div className="flex items-end place-content-end">
                     <Button
                       id="submit_button"
