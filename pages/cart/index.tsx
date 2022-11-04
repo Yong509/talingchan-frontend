@@ -18,7 +18,6 @@ import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
 import { InvoiceDetailCreateModel } from "model/invoice_detail_model";
 import { InvoiceCreateModel } from "model/invoice_model";
-import { LotPayload } from "model/lot_model";
 import { ProductPayload } from "model/product_model";
 import { GetServerSideProps, NextPage } from "next";
 import router from "next/router";
@@ -143,30 +142,16 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
         console.log(error);
       });
 
-    let lotData: Array<LotPayload> = [];
-
-    await axios
-      .get(process.env.API_BASE_URL + "lots")
-      .then(function (response) {
-        lotData = response.data;
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
     for (let index = 0; index < cartOrderData.length; index++) {
-      let oldestLot = lotData.find((lot) => {
-        return lot.PID.toString() == cartOrderData[index][0];
-      });
       let dataInvoiceDetail: InvoiceDetailCreateModel = {
         INVQty: parseInt(cartOrderData[index][2]),
         INVPrice: cartOrderData[index][4],
-        UID: oldestLot!.UID,
         IID: invoiceID,
-        LotID: oldestLot!.LotID,
+        PID: parseInt(cartOrderData[index][0]),
       };
-      await axios
-        .post(process.env.API_BASE_URL + "invoiceDetails", dataInvoiceDetail)
+
+      axios
+        .post(process.env.API_BASE_URL + "invoiceDetail", dataInvoiceDetail)
         .then(function (response) {
           console.log(response.data);
         })
@@ -174,6 +159,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           console.log(error);
         });
     }
+
     removeCookies("selectProductCookies");
     setBackdrop(false);
   };
@@ -185,7 +171,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              { buttonTitle: "Receive", onClick: () => { } },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -193,7 +179,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              { buttonTitle: "Login", onClick: () => { } },
             ]}
             id={"HomeAppBar"}
           />

@@ -1,7 +1,6 @@
 export interface InvoiceDetailCreateModel {
   INVQty: number;
   INVPrice: string;
-  UID: number;
+  PID: number;
   IID: number;
-  LotID: number;
 }

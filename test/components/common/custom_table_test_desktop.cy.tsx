@@ -12,18 +12,20 @@ describe("Custom table test", () => {
       PName: "Asdghfsjghfdjkgjihjisdobkmfsl;kvoivnodmivpmdsiofvsdij",
       PDescription: "B",
       PPrice: 500,
-      PQuantity: 3,
+      PInStock: 3,
       PPicture: "pic",
       PUnit: "a",
+      UID: 1,
     },
     {
       PID: 30,
       PName: "A",
       PDescription: "B",
       PPrice: 500,
-      PQuantity: 3,
+      PInStock: 3,
       PPicture: "",
       PUnit: "a",
+      UID: 1,
     },
   ];
 
