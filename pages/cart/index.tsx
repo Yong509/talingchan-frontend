@@ -16,7 +16,12 @@ import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomDialog from "components/common/custom_dialog";
 import CustomTable from "components/common/custom_table";
-import { getCookie, removeCookies, setCookie } from "cookies-next";
+import {
+  deleteCookie,
+  getCookie,
+  removeCookies,
+  setCookie,
+} from "cookies-next";
 import { data } from "cypress/types/jquery";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
@@ -25,12 +30,17 @@ import { InvoiceDetailCreateModel } from "model/invoice_detail_model";
 import { InvoiceCreateModel } from "model/invoice_model";
 import { ProductPayload } from "model/product_model";
 import { GetServerSideProps, NextPage } from "next";
-import router from "next/router";
+import router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface productProps {
   dataProduct?: Array<CartModel>;
+}
+
+interface purchaseCartModel {
+  invoiceID: number;
+  cart: Array<CartModel> | undefined;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -61,11 +71,10 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [dataProductCart, setDataProductCart] = useState<
     Array<CartModel> | undefined
   >(dataProduct);
-  const [invoiceID, setInvoiceID] = useState<number>(0);
   const [backdrop, setBackdrop] = useState<boolean>(false);
-  const [employee, setEmployee] = useState<Employee>();
-  const [errorEmployeeSnackbar, setErrorEmployeeSnackbar] = useState(false);
-
+  const [errorEmployeeSnackbar,setErrorEmployeeSnackbar] = useState<boolean>(false);
+  const [employee,setEmployee] = useState<Employee>();
+  let purchaseCart: purchaseCartModel = { invoiceID: 0, cart: [] };
   const {
     register,
     handleSubmit,
@@ -157,7 +166,6 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
       })
       .then(function (error) {
         console.log(error);
-        setErrorEmployeeSnackbar(true);
       });
     if (data || data != undefined) {
       handleClick();
@@ -175,28 +183,32 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
       EmpID: 1,
     };
 
+    let invoiceId: number = 0;
+
     invoiceData.CID = searchCustomer!.CID;
     await axios
       .post(process.env.API_BASE_URL + "invoices", invoiceData)
       .then(function (response) {
-        setInvoiceID(response.data.createdInvoice.IID);
+        invoiceId = response.data.createdInvoice.IID;
+
         setOpenConfirmDialog(false);
       })
       .catch(function (error) {
         console.log(error);
       });
 
+
+
     for (let index = 0; index < cartOrderData.length; index++) {
       let dataInvoiceDetail: InvoiceDetailCreateModel = {
         INVQty: parseInt(cartOrderData[index][2]),
         INVPrice: cartOrderData[index][4],
-        IID: invoiceID,
-        EID: employee!.EmpID,
         PID: parseInt(cartOrderData[index][0]),
+        IID: invoiceId,
+        EID: employee!.EmpID
       };
-
-      axios
-        .post(process.env.API_BASE_URL + "invoiceDetail", dataInvoiceDetail)
+      await axios
+        .post(process.env.API_BASE_URL + "invoiceDetails", dataInvoiceDetail)
         .then(function (response) {
           console.log(response.data);
         })
@@ -204,10 +216,12 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           console.log(error);
         });
     }
-    removeCookies("selectProductCookies");
+    setCreateInvoiceAlert(true);
     setBackdrop(false);
-    handleCreateInvoiceAlert();
-    router.push('/invoice/');
+    purchaseCart = { invoiceID: invoiceId, cart: dataProductCart };
+    console.log(purchaseCart);
+    router.push("invoice/" + JSON.stringify(purchaseCart));
+    deleteCookie("selectProductCookies");
   };
 
   return (
@@ -364,6 +378,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomTable
             deleteAble={true}
             total={true}
+            btCaptionTitle="Order"
             onOrder={(data) => {
               if (searchCustomer != undefined || searchCustomer) {
                 setOpenConfirmDialog(true);
