@@ -10,7 +10,8 @@ describe("Product card test", () => {
       and fruiting vines in containers or any backyard soils. It can be used during the initial 
       transplanting after digging the hole or anytime of the year to feed actively growing fruit trees and vines.`,
     PPrice: 200,
-    PQuantity: 3,
+    PInStock: 100,
+    UID: 1,
     PUnit: "KG",
     PPicture:
       "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
@@ -24,7 +25,8 @@ describe("Product card test", () => {
       and fruiting vines in containers or any backyard soils. It can be used during the initial 
       transplanting after digging the hole or anytime of the year to feed actively growing fruit trees and vines.`,
     PPrice: 200,
-    PQuantity: 0,
+    PInStock: 0,
+    UID: 1,
     PUnit: "KG",
     PPicture:
       "https://drearth.com/wp-content/uploads/9NatWonder_4LB_708p-1.jpg",
@@ -45,59 +47,105 @@ describe("Product card test", () => {
       cy.get(".MuiPaper-root").find("#product_instock");
       cy.get(".MuiPaper-root").find("#product_total");
       cy.get(".MuiPaper-root").find("#submit_button");
+      cy.get(".MuiPaper-root").find("#input-quantity")
     });
 
-    it("select quantity should render correctly", () => {
-      cy.get("#select_quantity").click();
-      cy.contains("0");
-      cy.contains("1 KG");
-      cy.contains("2 KG");
-      cy.contains("3 KG");
+    it("input quantity should type able only digit", () => {
+      cy.get("#input-quantity")
+        .click()
+        .type("Hello world")
+        .should("have.value", 0);
     });
 
-    it("should able to select item from dropdown and total price should correct", () => {
-      cy.get("#select_quantity").click();
-      cy.get('[data-value="1"]').click();
-      cy.contains("2 KG");
-      cy.contains("TOTAL 400 BAHT");
+    it("input quantity should type able", () => {
+      cy.get("#input-quantity").click().type("1").should("have.value", 1);
+    });
+
+    it("input quantity value should not accept negative", () => {
+      cy.get("#input-quantity").click().type("-1").should("have.value", 1);
+    });
+
+    it("input quantity value should not accept dot", () => {
+      cy.get("#input-quantity").click().type("1.2").should("have.value", 12);
+    });
+
+    it("input quantity value should not more than product instock", () => {
+      cy.get("#input-quantity")
+        .click()
+        .type("123")
+        .should("have.value", mockProductPayload.PInStock);
+    });
+
+    it("increase button should increase value", () => {
+      cy.get("#increase-button").click();
+      cy.get("#input-quantity").should("have.value", 1);
+    });
+
+    it("increase button should not increase more than product instock", () => {
+      for (let n = 0; n < mockProductPayload.PInStock + 20; n++) {
+        cy.get("#increase-button").click();
+      }
+
+      cy.get("#input-quantity").should("have.value", 100);
+    });
+
+    it("decrease button should decrease value", () => {
+      cy.get("#input-quantity").click().type("10");
+      cy.get("#decrease-button").click();
+      cy.get("#input-quantity").should("have.value", 9);
+    });
+
+    it("decrease button should not decrease to negative value", () => {
+      cy.get("#input-quantity").click().type("0");
+      cy.get("#decrease-button").click();
+      cy.get("#input-quantity").should("have.value", 0);
+    });
+
+    it("total product should calculate correctly", () => {
+      cy.get("#input-quantity").click().type("10");
+      cy.get('#total_price').should("have.text", 'TOTAL 2000 BAHT')
     });
 
     it("button should able to click", () => {
       cy.get("#submit_button").click();
     });
-  });
 
-  context("product card un available Desktop resolution", () => {
-    beforeEach(() => {
-      cy.viewport(1280, 1080);
-      cy.mount(<ProductCard product={mockUnavailableProductPayload} />);
-    });
+    context("product card un available Desktop resolution", () => {
+      beforeEach(() => {
+        cy.viewport(1280, 1080);
+        cy.mount(<ProductCard product={mockUnavailableProductPayload} />);
+      });
 
-    it("should render correctly", () => {
-      cy.get(".MuiPaper-root").find("#product_img");
-      cy.get(".MuiPaper-root").find("#product_id");
-      cy.get(".MuiPaper-root").find("#product_name");
-      cy.get(".MuiPaper-root").find("#product_description");
-      cy.get(".MuiPaper-root").find("#product_price");
-      cy.get(".MuiPaper-root").find("#product_instock");
-      cy.get(".MuiPaper-root").find("#product_total");
-      cy.get(".MuiPaper-root").find("#submit_button").should("not.exist");
-    });
+      it("should render correctly", () => {
+        cy.get(".MuiPaper-root").find("#product_img");
+        cy.get(".MuiPaper-root").find("#product_id");
+        cy.get(".MuiPaper-root").find("#product_name");
+        cy.get(".MuiPaper-root").find("#product_description");
+        cy.get(".MuiPaper-root").find("#product_price");
+        cy.get(".MuiPaper-root").find("#product_instock");
+        cy.get(".MuiPaper-root").find("#product_total");
+        cy.get(".MuiPaper-root").find("#submit_button").should("not.exist");
+        cy.get(".MuiPaper-root").find("#input-quantity")
+      });
 
-    it("select quantity should be disable", () => {
-      cy.get("#select_quantity").click();
-      cy.contains("[id='deslect_menuitem']").should("not.exist");
-      cy.contains("[id='0_menuitem']").should("not.exist");
-      cy.contains("[id='1_menuitem']").should("not.exist");
-      cy.contains("[id='2_menuitem']").should("not.exist");
-      cy.contains("[id='3_menuitem']").should("not.exist");
-    });
+      it("decrease-button should be disable", () => {
+        cy.get("#decrease-button").should('be.disabled');
+      });
 
-    it("should show unavailable text", () => {
-      cy.get(".MuiPaper-root")
-        .find("#product_instock")
-        .should("have.text", "unavailable");
-      cy.contains("unavailable");
+      it("increase-button should be disable", () => {
+        cy.get("#increase-button").should('be.disabled');
+      });
+
+      it("input-quantity should be disable", () => {
+        cy.get("#input-quantity").should('be.disabled');
+      });
+
+      it("should show unavailable text", () => {
+        cy.get(".MuiPaper-root")
+          .find("#product_instock")
+          .should("have.text", "unavailable");
+        cy.contains("unavailable");
+      });
     });
   });
 });

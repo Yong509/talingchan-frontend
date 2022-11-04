@@ -29,6 +29,13 @@ describe("Search form test for desktop resolution", () => {
           cy.get('.MuiButtonBase-root').click();
           cy.contains("Can not be empty");
       });
+
+      it('Validate cannot be charecter', () => {
+        cy.mount(<AddCustomerForm/>);
+        cy.get("#customerTel").type("test test password");
+        cy.get('.MuiButtonBase-root').click();
+        cy.contains("Please enter phone number");
+    });
   
       it('Error message should not appear when on blur', () => {
           cy.mount(<AddCustomerForm/>);

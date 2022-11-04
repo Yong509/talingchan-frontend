@@ -7,7 +7,6 @@ import ProductCard from "components/common/product_card";
 import { ProductPayload } from "model/product_model";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { LotPayload } from "model/lot_model";
 import { UnitPayload } from "model/unit_model";
 import { useRouter } from "next/router";
 import { CartModel } from "model/cart_model";
@@ -19,7 +18,6 @@ interface pageProps {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let data: Array<ProductPayload> = [];
-  let lotProduct: Array<LotPayload> = [];
   let unitProduct: Array<UnitPayload> = [];
 
   await axios
@@ -31,14 +29,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(error);
     });
 
-  await axios
-    .get(process.env.API_BASE_URL + "lots")
-    .then(function (response) {
-      lotProduct = response.data;
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
 
   await axios
     .get(process.env.API_BASE_URL + "units")
@@ -49,35 +39,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(error);
     });
 
-  for (let index = 0; index < data.length; index++) {
-    let total: number = 0;
-    for (let j = 0; j < lotProduct.length; j++) {
-      if (data[index].PID == lotProduct[j].PID) {
-        total += lotProduct[j].LotQty;
-      }
-    }
-    data[index].PQuantity = total;
-  }
-
-  for (let index = 0; index < data.length; index++) {
-    let tempUID: number = 0;
-    for (let j = 0; j < lotProduct.length; j++) {
-      if (data[index].PID == lotProduct[j].PID) {
-        tempUID = lotProduct[j].UID;
-        for (let k = 0; k < unitProduct.length; k++) {
-          if (unitProduct[k].UID == tempUID) {
-            data[index].PUnit = unitProduct[k].UDetail;
-          }
+    for (let index = 0; index < data.length; index++) {
+      for (let j = 0; j < unitProduct.length; j++) {
+        if(data[index].UID == unitProduct[j].UID){
+          data[index].PUnit = unitProduct[j].UDetail;
         }
       }
+      
     }
-  }
   return {
     props: {
       data,
     },
   };
 };
+
 
 const Home: NextPage = (props: pageProps) => {
   const router = useRouter();
@@ -108,7 +84,8 @@ const Home: NextPage = (props: pageProps) => {
                 PName: item.PName,
                 PDescription: item.PDescription,
                 PPrice: item.PPrice,
-                PQuantity: item.PQuantity,
+                PInStock: item.PInStock,
+                UID: item.UID,
                 PUnit: item.PUnit,
                 PPicture: item.PPicture,
               }}
@@ -206,7 +183,8 @@ const Home: NextPage = (props: pageProps) => {
                           PName: item.PName,
                           PDescription: item.PDescription,
                           PPrice: item.PPrice,
-                          PQuantity: item.PQuantity,
+                          PInStock: item.PInStock,
+                          UID: item.UID,
                           PUnit: item.PUnit,
                           PPicture: item.PPicture,
                         }}
