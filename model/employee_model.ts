@@ -1,6 +1,7 @@
-
-
 export interface Employee {
-    EmpID : string,
-    EmpPassword : string
+    EmpID: number,
+    EmpName: string,
+    EmpPosition: string,
+    EmpTel: string,
+    EmpPassword: string
 }
