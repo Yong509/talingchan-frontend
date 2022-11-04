@@ -21,8 +21,10 @@ interface customTableProps {
   total?: boolean;
   deleteAble?: boolean;
   customer?: string;
+  btCaptionTitle?: String;
   onOpen?: (id: number) => void;
   onDelete?: (product: string) => void;
+  onPurchase?: () => void;
   onOrder?: (order: Array<Array<string>>) => void;
 }
 
@@ -73,34 +75,63 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                   </Typography>
                 </div>
                 <div>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    onClick={() => {
-                      props.onOrder?.(props.data!);
-                    }}
-                    sx={{
-                      width: {
-                        xs: "75px",
-                        md: "100px",
-                      },
-                      height: {
-                        xs: "33px",
-                        md: "45px",
-                      },
-                      fontSize: {
-                        xs: "12px",
-                        md: "16px",
-                      },
-                    }}
-                    style={{
-                      marginLeft: "12px",
-                      borderRadius: "10px",
-                      backgroundColor: "#4caf50",
-                    }}
-                  >
-                    Order
-                  </Button>
+                  {props.onOrder != null ? (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={() => {
+                        props.onOrder?.(props.data!);
+                      }}
+                      sx={{
+                        width: {
+                          xs: "75px",
+                          md: "100px",
+                        },
+                        height: {
+                          xs: "33px",
+                          md: "45px",
+                        },
+                        fontSize: {
+                          xs: "12px",
+                          md: "16px",
+                        },
+                      }}
+                      style={{
+                        marginLeft: "12px",
+                        borderRadius: "10px",
+                        backgroundColor: "#4caf50",
+                      }}
+                    >
+                      {props.btCaptionTitle}
+                    </Button>
+                  ) : (
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      onClick={props.onPurchase}
+                      sx={{
+                        width: {
+                          xs: "75px",
+                          md: "100px",
+                        },
+                        height: {
+                          xs: "33px",
+                          md: "45px",
+                        },
+                        fontSize: {
+                          xs: "12px",
+                          md: "16px",
+                        },
+                      }}
+                      style={{
+                        marginLeft: "12px",
+                        borderRadius: "10px",
+                        backgroundColor: "#4caf50",
+                      }}
+                    >
+                      {props.btCaptionTitle}
+                    </Button>
+                  )}
                 </div>
               </div>
             </caption>
