@@ -5,3 +5,8 @@ export interface Employee {
     EmpTel: string,
     EmpPassword: string
 }
+
+export interface EmployeeLogIn {
+    EmpID: number,
+    EmpPassword: string
+}

@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Employee } from 'model/employee_model';
+import {  EmployeeLogIn } from 'model/employee_model';
 
 
 const LoginForm: React.FC = () => {
@@ -41,7 +41,7 @@ const LoginForm: React.FC = () => {
         reset,
     } = useForm();
 
-    const employee : Employee = {
+    const employee : EmployeeLogIn = {
         EmpID : watch('EmpID'),
         EmpPassword : watch('Password')
     }
