@@ -9,7 +9,6 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { ProductModel } from "model/product_model";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
