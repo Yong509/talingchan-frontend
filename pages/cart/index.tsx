@@ -204,8 +204,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
         INVQty: parseInt(cartOrderData[index][2]),
         INVPrice: cartOrderData[index][4],
         PID: parseInt(cartOrderData[index][0]),
-        IID: invoiceId,
-        EID: employee!.EmpID
+        IID: invoiceId
       };
       await axios
         .post(process.env.API_BASE_URL + "invoiceDetails", dataInvoiceDetail)

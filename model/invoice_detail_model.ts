@@ -3,5 +3,4 @@ export interface InvoiceDetailCreateModel {
   INVPrice: string;
   PID: number;
   IID: number;
-  EID: number;
 }
