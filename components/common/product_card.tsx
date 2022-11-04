@@ -183,6 +183,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                           ? setSelectQuantity(0)
                           : setSelectQuantity(selectQuantity - 1);
                       }}
+                      disabled={props.product.PInStock <= 0 ? true : false }
                       style={{
                         maxWidth: "90px",
                         backgroundColor: "#EBEBEB",
@@ -205,14 +206,15 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                           textAlign: "center",
                         },
                       }}
+                      disabled={props.product.PInStock <= 0 ? true : false }
                       sx={{
                         maxWidth: "90px",
                         height: 34,
                         borderRadius: 0,
-                        fontSize: { xs: "10px", md: "12px" },
+                        fontSize: { xs: "13px", md: "15px" },
                       }}
                       error={errorQuantity}
-                      id="quantity-input"
+                      id="input-quantity"
                       onChange={(e) => {
                         if (
                           parseInt(e.target.value) < 0 ||
@@ -231,6 +233,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                     />
                     <Button
                       id="increase-button"
+                      disabled={props.product.PInStock <= 0 ? true : false }
                       onClick={() => {
                         selectQuantity >= props.product.PInStock
                           ? setSelectQuantity(props.product.PInStock)
