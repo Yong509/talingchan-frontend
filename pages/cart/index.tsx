@@ -40,7 +40,7 @@ interface productProps {
 
 interface purchaseCartModel {
   invoiceID: number;
-  cart: Array<CartModel> | undefined;
+  cart: Array<CartModel>;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
@@ -72,8 +72,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     Array<CartModel> | undefined
   >(dataProduct);
   const [backdrop, setBackdrop] = useState<boolean>(false);
-  const [errorEmployeeSnackbar,setErrorEmployeeSnackbar] = useState<boolean>(false);
-  const [employee,setEmployee] = useState<Employee>();
+  const [errorEmployeeSnackbar, setErrorEmployeeSnackbar] = useState<boolean>(false);
+  const [employee, setEmployee] = useState<Employee>();
   let purchaseCart: purchaseCartModel = { invoiceID: 0, cart: [] };
   const {
     register,
@@ -217,7 +217,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
     setCreateInvoiceAlert(true);
     setBackdrop(false);
-    purchaseCart = { invoiceID: invoiceId, cart: dataProductCart };
+    purchaseCart = { invoiceID: invoiceId, cart: dataProductCart! };
     console.log(purchaseCart);
     router.push("invoice/" + JSON.stringify(purchaseCart));
     deleteCookie("selectProductCookies");
@@ -230,7 +230,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              { buttonTitle: "Receive", onClick: () => { } },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -238,7 +238,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              { buttonTitle: "Login", onClick: () => { } },
             ]}
             id={"HomeAppBar"}
           />

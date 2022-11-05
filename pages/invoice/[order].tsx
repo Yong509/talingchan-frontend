@@ -8,16 +8,32 @@ import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+interface purchaseCartModel {
+  invoiceID: number;
+  cart: Array<CartModel> ;
+}
+
 const InvoicePage: NextPage = () => {
   const router = useRouter();
   const { order } = router.query;
 
-  const routerQuery = JSON.parse(order as string);
+
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 
   const handlePurchaseProduct = async () => {
     await axios.get(process.env.API_BASE_URL + "");
   };
+  const [routerQuery, setRouterQuery] = useState<purchaseCartModel>({ invoiceID: 0, cart: [] });
+  useEffect(() => {
+    try {
+      let data: purchaseCartModel = JSON.parse(order as string);
+      if (data != undefined) {
+        setRouterQuery(data);
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  },[order])
 
   return (
     <>
@@ -26,7 +42,7 @@ const InvoicePage: NextPage = () => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              { buttonTitle: "Receive", onClick: () => { } },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -34,7 +50,7 @@ const InvoicePage: NextPage = () => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              { buttonTitle: "Login", onClick: () => { } },
             ]}
             id={"HomeAppBar"}
           />
@@ -70,7 +86,7 @@ const InvoicePage: NextPage = () => {
               { title: "Price per Unit", style: "" },
               { title: "Total", style: "" },
             ]}
-            data={routerQuery.cart.map((item: CartModel) => {
+            data={routerQuery?.cart.map((item: CartModel) => {
               return [
                 String(item.id),
                 item.name,
