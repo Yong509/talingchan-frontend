@@ -10,20 +10,22 @@ import { useEffect, useState } from "react";
 
 interface purchaseCartModel {
   invoiceID: number;
-  cart: Array<CartModel> ;
+  cart: Array<CartModel>;
+}
+
+interface updateInStock {
+  PInStock: number;
 }
 
 const InvoicePage: NextPage = () => {
   const router = useRouter();
   const { order } = router.query;
 
-
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
-
-  const handlePurchaseProduct = async () => {
-    await axios.get(process.env.API_BASE_URL + "");
-  };
-  const [routerQuery, setRouterQuery] = useState<purchaseCartModel>({ invoiceID: 0, cart: [] });
+  const [routerQuery, setRouterQuery] = useState<purchaseCartModel>({
+    invoiceID: 0,
+    cart: [],
+  });
   useEffect(() => {
     try {
       let data: purchaseCartModel = JSON.parse(order as string);
@@ -31,9 +33,37 @@ const InvoicePage: NextPage = () => {
         setRouterQuery(data);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  },[order])
+  }, [order]);
+
+  const handlePurchaseProduct = () => {
+    routerQuery.cart.map(async (item) => {
+      let afterCutStock: number = 0;
+      let productInStock: number = 0;
+      let updateInStock: updateInStock = { PInStock: 0 };
+      await axios
+        .get(process.env.API_BASE_URL + "products/" + item.id)
+        .then(function (response) {
+          productInStock = response.data.PInStock;
+          console.log(productInStock);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      afterCutStock = productInStock - item.quantity;
+      updateInStock = { PInStock: afterCutStock };
+
+      await axios
+        .put(process.env.API_BASE_URL + "products/" + item.id, updateInStock)
+        .then(function (response) {
+          console.log(response.data.PInStock);
+        }).catch(function (error) {
+          console.log(error)
+        });
+    });
+  };
 
   return (
     <>

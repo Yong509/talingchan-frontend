@@ -502,7 +502,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             text: `Confirme Order`,
             color: "black",
           }}
-          content={`Are you sure you want to order?`}
+          content={`You will not be able to edit your order after you place prder. Are you sure you want to order?`}
           open={openConfirmDialog}
           cancelButton={{ text: "cancel", fontColor: "black" }}
           confirmButton={{
