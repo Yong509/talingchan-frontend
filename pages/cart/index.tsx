@@ -30,6 +30,7 @@ import { InvoiceDetailCreateModel } from "model/invoice_detail_model";
 import { InvoiceCreateModel } from "model/invoice_model";
 import { ProductPayload } from "model/product_model";
 import { GetServerSideProps, NextPage } from "next";
+import Link from "next/link";
 import router, { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -294,7 +295,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                       helperText={errors.search_customer?.message?.toString()}
                       error={errors.search_customer?.message ? true : false}
                     />
-                     <FormHelperText id="outlined-weight-helper-text"><a href="/add_customer">Add New Customer</a></FormHelperText>
+                     <FormHelperText id="outlined-weight-helper-text"><Link href="/add_customer">Add New Customer</Link></FormHelperText>
                   </Box>
                 </div>
               </div>

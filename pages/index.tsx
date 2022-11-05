@@ -39,14 +39,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(error);
     });
 
-    for (let index = 0; index < data.length; index++) {
-      for (let j = 0; j < unitProduct.length; j++) {
-        if(data[index].UID == unitProduct[j].UID){
-          data[index].PUnit = unitProduct[j].UDetail;
-        }
+  for (let index = 0; index < data.length; index++) {
+    for (let j = 0; j < unitProduct.length; j++) {
+      if (data[index].UID == unitProduct[j].UID) {
+        data[index].PUnit = unitProduct[j].UDetail;
       }
-      
     }
+
+  }
   return {
     props: {
       data,
@@ -61,6 +61,7 @@ const Home: NextPage = (props: pageProps) => {
   const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
   const [open, setOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
+  const [errorQuantityOpen, setErrorQuantityOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
 
   useEffect(() => {
@@ -141,6 +142,7 @@ const Home: NextPage = (props: pageProps) => {
     }
     setOpen(false);
     setErrorOpen(false);
+    setErrorQuantityOpen(false);
   };
   return (
     <>
@@ -149,7 +151,7 @@ const Home: NextPage = (props: pageProps) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              { buttonTitle: "Receive", onClick: () => { } },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -157,7 +159,7 @@ const Home: NextPage = (props: pageProps) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              { buttonTitle: "Login", onClick: () => { } },
             ]}
             id={"HomeAppBar"}
           />
@@ -174,45 +176,53 @@ const Home: NextPage = (props: pageProps) => {
         <div className="pt-24">
           <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {searchProduct.length == 0
-              ? props.data?.map((item, index) => {
-                  return (
-                    <React.Fragment key={item.PID}>
-                      <ProductCard
-                        product={{
-                          PID: item.PID,
-                          PName: item.PName,
-                          PDescription: item.PDescription,
-                          PPrice: item.PPrice,
-                          PInStock: item.PInStock,
-                          UID: item.UID,
-                          PUnit: item.PUnit,
-                          PPicture: item.PPicture,
-                        }}
-                        onSelectProduct={(product) => {
-                          handleClick(product);
+              ? props.data?.map((itemProduct, index) => {
+                return (
+                  <React.Fragment key={itemProduct.PID}>
+                    <ProductCard
+                      product={{
+                        PID: itemProduct.PID,
+                        PName: itemProduct.PName,
+                        PDescription: itemProduct.PDescription,
+                        PPrice: itemProduct.PPrice,
+                        PInStock: itemProduct.PInStock,
+                        UID: itemProduct.UID,
+                        PUnit: itemProduct.PUnit,
+                        PPicture: itemProduct.PPicture,
+                      }}
+                      onSelectProduct={(product) => {
 
-                          let haveItem = false;
-                          let newProduct = selectProduct.map((item) => {
-                            if (item.name == product.name) {
+                        handleClick(product);
+                        let errorAddMore = false;
+                        let haveItem = false;
+                        let newProduct = selectProduct.map((item) => {
+                          if (item.name == product.name) {
+                            if (item.quantity + product.quantity <= itemProduct.PInStock) {
                               item.quantity += product.quantity;
                               haveItem = true;
                               return item;
+                            }else{
+                              errorAddMore = true;
+                              setErrorQuantityOpen(true);
                             }
-                            return item;
-                          });
-                          if (!haveItem) {
-                            newProduct = [...newProduct, product];
                           }
-                          setCookie(
-                            "selectProductCookies",
-                            JSON.stringify(newProduct)
-                          );
-                          setSelectProduct(newProduct);
-                        }}
-                      />
-                    </React.Fragment>
-                  );
-                })
+                          return item;
+                        });
+                        if(!errorAddMore){
+                        if (!haveItem) {
+                          newProduct = [...newProduct, product];
+                        }
+                        setCookie(
+                          "selectProductCookies",
+                          JSON.stringify(newProduct)
+                        );
+                        setSelectProduct(newProduct);
+                        }
+                      }}
+                    />
+                  </React.Fragment>
+                );
+              })
               : showData()}
           </div>
         </div>
@@ -225,6 +235,17 @@ const Home: NextPage = (props: pageProps) => {
             Added {addProduct?.quantity} of {addProduct?.name} successfully!
           </Alert>
         </Snackbar>
+
+        <Snackbar
+          open={errorQuantityOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
+           You cannot add more than product instock
+          </Alert>
+        </Snackbar>
+
         <Snackbar
           open={errorOpen}
           autoHideDuration={3000}
