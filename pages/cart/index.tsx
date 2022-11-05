@@ -268,7 +268,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
               handleSearchEmployee(e.search_employee);
             })}
           >
-            <div className="grid grid-cols-3 gap-y-20 lg:gap-2">
+            <div className="grid grid-cols-3 gap-y-24 lg:gap-2">
               <div className="col-span-2 lg:col-span-1">
                 <div className="w-full flex justify-center">
                   <Box style={{ position: "absolute" }}>
@@ -294,6 +294,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                       helperText={errors.search_customer?.message?.toString()}
                       error={errors.search_customer?.message ? true : false}
                     />
+                     <FormHelperText id="outlined-weight-helper-text"><a href="/add_customer">Add New Customer</a></FormHelperText>
                   </Box>
                 </div>
               </div>
