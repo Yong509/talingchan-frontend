@@ -1,4 +1,11 @@
-import { Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomDialog from "components/common/custom_dialog";
@@ -17,15 +24,23 @@ interface updateInStock {
   PInStock: number;
 }
 
+interface updateStatus {
+  IStatus: string;
+}
+
 const InvoicePage: NextPage = () => {
   const router = useRouter();
   const { order } = router.query;
-
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [routerQuery, setRouterQuery] = useState<purchaseCartModel>({
     invoiceID: 0,
     cart: [],
   });
+  const [backdrop, setBackdrop] = useState<boolean>(false);
+  const [successPurchase, setSuccessPurchase] = useState<boolean>(false);
+  const [failPurchase, setFailPurchase] = useState<boolean>(false);
+
+
   useEffect(() => {
     try {
       let data: purchaseCartModel = JSON.parse(order as string);
@@ -37,32 +52,69 @@ const InvoicePage: NextPage = () => {
     }
   }, [order]);
 
-  const handlePurchaseProduct = () => {
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccessPurchase(false);
+    setFailPurchase(false);
+  };
+  const delay = (ms: number) => {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+}
+
+  const handlePurchaseProduct =async () => {
+    setOpenConfirmDialog(false);
+    setBackdrop(true);
     routerQuery.cart.map(async (item) => {
       let afterCutStock: number = 0;
       let productInStock: number = 0;
       let updateInStock: updateInStock = { PInStock: 0 };
+      let updateStatus: updateStatus = { IStatus: "" };
       await axios
         .get(process.env.API_BASE_URL + "products/" + item.id)
         .then(function (response) {
           productInStock = response.data.PInStock;
-          console.log(productInStock);
         })
         .catch(function (error) {
           console.log(error);
         });
-
+      if(item.quantity <= productInStock){
       afterCutStock = productInStock - item.quantity;
       updateInStock = { PInStock: afterCutStock };
-
+      updateStatus = { IStatus: "Purchased" };
+      
       await axios
         .put(process.env.API_BASE_URL + "products/" + item.id, updateInStock)
-        .then(function (response) {
-          console.log(response.data.PInStock);
-        }).catch(function (error) {
-          console.log(error)
+        .catch(function (error) {
+          console.log(error);
+          setFailPurchase(true);
         });
+
+      await axios
+        .put(
+          process.env.API_BASE_URL + "invoices/" + routerQuery.invoiceID,
+          updateStatus
+        )
+        .then(function (response) {
+          setSuccessPurchase(true);
+        })
+        .catch(function (error) {
+          console.log(error);
+          setFailPurchase(true);
+        });
+
+        setBackdrop(false);
+      }
+      else{
+        setBackdrop(false);
+        setFailPurchase(true);
+      }
     });
+    router.push("/");
   };
 
   return (
@@ -137,8 +189,8 @@ const InvoicePage: NextPage = () => {
           open={openConfirmDialog}
           cancelButton={{ text: "cancel", fontColor: "black" }}
           confirmButton={{
-            text: "confirm",
-            color: "#F26161",
+            text: "purchase",
+            color: "#4caf50",
             fontColor: "white",
           }}
           onConfirm={() => {
@@ -148,6 +200,36 @@ const InvoicePage: NextPage = () => {
             setOpenConfirmDialog(false);
           }}
         />
+
+
+        <Snackbar
+          open={failPurchase}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="error">
+            <AlertTitle>Purchase Fail</AlertTitle>
+            <strong>Something went wrong!</strong>
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={successPurchase}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="success">
+            <AlertTitle>Purchase Success</AlertTitle>
+            <strong>Thank you for shopping with us!</strong>
+          </Alert>
+        </Snackbar>
+
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </>
   );

@@ -63,6 +63,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [open, setOpen] = useState(false);
   const [errorOpen, setErrorOpen] = useState(false);
   const [errorCustomerOpen, setErrorCustomerOpen] = useState(false);
+  const [employeeOpen, setEmployeeOpen] = useState(false);
   const [deleteProductName, setDeleteProductName] = useState<string>();
   const [openDialog, setOpenDialog] = useState<boolean>(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
@@ -420,13 +421,13 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           </Alert>
         </Snackbar>
 
-        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Snackbar open={employeeOpen} autoHideDuration={3000} onClose={handleClose}>
           <Alert
             onClose={handleClose}
             severity="success"
             sx={{ width: "100%" }}
           >
-            Adding {searchCustomer?.CName} successfully!
+            Adding {employee?.EmpName} successfully!
           </Alert>
         </Snackbar>
         <Snackbar
@@ -470,6 +471,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             Customer or Employee are empty
           </Alert>
         </Snackbar>
+
         <CustomDialog
           title={{
             text: `Remove ${deleteProductName} out of cart.`,
