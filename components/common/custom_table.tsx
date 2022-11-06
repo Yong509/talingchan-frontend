@@ -29,7 +29,7 @@ interface customTableProps {
   customer?: string;
   btCaption?: buttonProps;
   onOpen?: (id: number, status?: string) => void;
-  onDelete?: (product: string) => void;
+  onDelete?: (product: string, id?: string) => void;
   onPurchase?: () => void;
   onOrder?: (order: Array<Array<string>>) => void;
 }
@@ -221,7 +221,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                         height={35}
                         id="trash-icon"
                         onClick={(e) => {
-                          props.onDelete?.(row[1]);
+                          props.onDelete?.(row[1], row[0]);
                         }}
                       />
                     </div>

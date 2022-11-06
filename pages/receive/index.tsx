@@ -1,7 +1,13 @@
+import Alert from "@mui/material/Alert/Alert";
+import Backdrop from "@mui/material/Backdrop/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress/CircularProgress";
+import Snackbar from "@mui/material/Snackbar/Snackbar";
 import Typography from "@mui/material/Typography/Typography";
 import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
+import CustomDialog from "components/common/custom_dialog";
 import CustomTable from "components/common/custom_table";
+import { setCookie } from "cookies-next";
 import { CartModel } from "model/cart_model";
 import { CustomerModel } from "model/customer";
 import { Employee } from "model/employee_model";
@@ -10,6 +16,7 @@ import { InvoiceModel } from "model/invoice_model";
 import { ProductPayload } from "model/product_model";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 interface receiveModel {
   IID: number;
@@ -148,6 +155,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Receive = (props: pageProps) => {
   const router = useRouter();
+  const [removeInvoice, setRemoveInvoice] = useState<string>("");
+  const [openRemoveInvoiceDialog, setOpenRemoveInvoiceDialog] =
+    useState<boolean>(false);
+  const [openBackDrop, setOpenBackDrop] = useState<boolean>(false);
+  const [openSnackDeleteComplete, setOpenSnackDeleteComplete] =
+    useState<boolean>(false);
+  const [openSnackDeleteError, setOpenSnackDeleteError] =
+    useState<boolean>(false);
   let purchaseCart: purchaseCartModel = {
     invoiceID: 0,
     invoiceStatus: "",
@@ -218,6 +233,33 @@ const Receive = (props: pageProps) => {
     router.push("invoice/" + JSON.stringify(purchaseCart));
   };
 
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenSnackDeleteComplete(false);
+  };
+
+  const handleDeleteInvoice = async (id: string) => {
+    setOpenRemoveInvoiceDialog(false);
+    setOpenBackDrop(true);
+    await axios
+      .delete(process.env.API_BASE_URL + "invoices/" + id)
+      .then(async function (response) {
+        console.log(response.data);
+        setOpenSnackDeleteComplete(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+        setOpenSnackDeleteError(true);
+      });
+
+    router.reload();
+  };
+
   return (
     <>
       <div className="bg-white">
@@ -273,17 +315,70 @@ const Receive = (props: pageProps) => {
                   ];
                 })}
                 deleteAble={true}
-                onDelete={(id) => {
+                onDelete={(name, id) => {
                   console.log("delete");
+                  setRemoveInvoice(id!);
+                  setOpenRemoveInvoiceDialog(true);
                 }}
                 onOpen={(id, status) => {
-                  console.log("open");
-                  // handleClickReceive(id, status!);
+                  handleClickReceive(id, status!);
                 }}
               />
             </div>
           </div>
         </div>
+
+        <CustomDialog
+          title={{
+            text: `Remove ${removeInvoice} out of cart.`,
+            color: "#F26161",
+          }}
+          content={`After you delte you will not be able to edit. Are you sure you want to remove ${removeInvoice}?`}
+          open={openRemoveInvoiceDialog}
+          cancelButton={{ text: "cancel", fontColor: "black" }}
+          confirmButton={{
+            text: "confirm",
+            color: "#F26161",
+            fontColor: "white",
+          }}
+          onCancel={() => {
+            setOpenRemoveInvoiceDialog(false);
+          }}
+          onConfirm={() => {
+            handleDeleteInvoice(removeInvoice);
+          }}
+        />
+
+        <Snackbar
+          open={openSnackDeleteComplete}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert
+            severity="success"
+            onClose={handleClose}
+            sx={{ width: "100%" }}
+          >
+            Delete successfully.
+          </Alert>
+        </Snackbar>
+
+        <Snackbar
+          open={openSnackDeleteError}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
+            Delete fail.
+          </Alert>
+        </Snackbar>
+
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={openBackDrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </>
   );
