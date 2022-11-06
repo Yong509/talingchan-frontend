@@ -174,9 +174,6 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
             {props.data!.map((row, index) => (
               <TableRow
                 id="table-row"
-                onClick={() => {
-                  props.onOpen?.(parseInt(row[0]), row[1]);
-                }}
                 style={{ ...getStripedStyle(index) }}
                 key={index}
               >
@@ -186,6 +183,9 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                       <TableCell
                         key={index}
                         align="left"
+                        onClick={() => {
+                          props.onOpen?.(parseInt(row[0]), row[1]);
+                        }}
                         sx={{
                           maxWidth: "100px",
                           wordBreak: "break-word",
@@ -199,6 +199,9 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                       <TableCell
                         key={index}
                         align="right"
+                        onClick={() => {
+                          props.onOpen?.(parseInt(row[0]), row[1]);
+                        }}
                         sx={{
                           maxWidth: "100px",
                           wordBreak: "break-word",
@@ -211,11 +214,11 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                 })}
                 {props.deleteAble ? (
                   <TableCell width="10%" align="right">
-                    <div className="z-40">
+                    <div className="z-50">
                       <Image
                         src="/trash.svg"
-                        width={30}
-                        height={30}
+                        width={35}
+                        height={35}
                         id="trash-icon"
                         onClick={(e) => {
                           props.onDelete?.(row[1]);

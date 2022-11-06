@@ -273,11 +273,12 @@ const Receive = (props: pageProps) => {
                   ];
                 })}
                 deleteAble={true}
-                onDelete={() => {
+                onDelete={(id) => {
                   console.log("delete");
                 }}
                 onOpen={(id, status) => {
-                  handleClickReceive(id, status!);
+                  console.log("open");
+                  // handleClickReceive(id, status!);
                 }}
               />
             </div>
