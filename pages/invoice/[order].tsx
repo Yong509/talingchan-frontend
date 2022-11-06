@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 
 interface purchaseCartModel {
   invoiceID: number;
+  invoiceStatus: string;
   cart: Array<CartModel>;
 }
 
@@ -34,12 +35,12 @@ const InvoicePage: NextPage = () => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [routerQuery, setRouterQuery] = useState<purchaseCartModel>({
     invoiceID: 0,
+    invoiceStatus: "",
     cart: [],
   });
   const [backdrop, setBackdrop] = useState<boolean>(false);
   const [successPurchase, setSuccessPurchase] = useState<boolean>(false);
   const [failPurchase, setFailPurchase] = useState<boolean>(false);
-
 
   useEffect(() => {
     try {
@@ -63,10 +64,10 @@ const InvoicePage: NextPage = () => {
     setFailPurchase(false);
   };
   const delay = (ms: number) => {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-}
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
 
-  const handlePurchaseProduct =async () => {
+  const handlePurchaseProduct = async () => {
     setOpenConfirmDialog(false);
     setBackdrop(true);
     routerQuery.cart.map(async (item) => {
@@ -82,34 +83,33 @@ const InvoicePage: NextPage = () => {
         .catch(function (error) {
           console.log(error);
         });
-      if(item.quantity <= productInStock){
-      afterCutStock = productInStock - item.quantity;
-      updateInStock = { PInStock: afterCutStock };
-      updateStatus = { IStatus: "Purchased" };
-      
-      await axios
-        .put(process.env.API_BASE_URL + "products/" + item.id, updateInStock)
-        .catch(function (error) {
-          console.log(error);
-          setFailPurchase(true);
-        });
+      if (item.quantity <= productInStock) {
+        afterCutStock = productInStock - item.quantity;
+        updateInStock = { PInStock: afterCutStock };
+        updateStatus = { IStatus: "Purchased" };
 
-      await axios
-        .put(
-          process.env.API_BASE_URL + "invoices/" + routerQuery.invoiceID,
-          updateStatus
-        )
-        .then(function (response) {
-          setSuccessPurchase(true);
-        })
-        .catch(function (error) {
-          console.log(error);
-          setFailPurchase(true);
-        });
+        await axios
+          .put(process.env.API_BASE_URL + "products/" + item.id, updateInStock)
+          .catch(function (error) {
+            console.log(error);
+            setFailPurchase(true);
+          });
+
+        await axios
+          .put(
+            process.env.API_BASE_URL + "invoices/" + routerQuery.invoiceID,
+            updateStatus
+          )
+          .then(function (response) {
+            setSuccessPurchase(true);
+          })
+          .catch(function (error) {
+            console.log(error);
+            setFailPurchase(true);
+          });
 
         setBackdrop(false);
-      }
-      else{
+      } else {
         setBackdrop(false);
         setFailPurchase(true);
       }
@@ -124,7 +124,7 @@ const InvoicePage: NextPage = () => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => { } },
+              { buttonTitle: "Receive", onClick: () => {} },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -132,7 +132,7 @@ const InvoicePage: NextPage = () => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => { } },
+              { buttonTitle: "Login", onClick: () => {} },
             ]}
             id={"HomeAppBar"}
           />
@@ -157,7 +157,10 @@ const InvoicePage: NextPage = () => {
         <div className=" md:px-16 px-4">
           <CustomTable
             total={true}
-            btCaptionTitle="Purchase"
+            btCaption={{
+              btCaptionTitle: "Purchase",
+              disable: routerQuery?.invoiceStatus == "Preorder" ? true : false,
+            }}
             onPurchase={() => {
               setOpenConfirmDialog(true);
             }}
@@ -200,7 +203,6 @@ const InvoicePage: NextPage = () => {
             setOpenConfirmDialog(false);
           }}
         />
-
 
         <Snackbar
           open={failPurchase}

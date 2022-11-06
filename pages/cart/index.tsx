@@ -41,6 +41,7 @@ interface productProps {
 
 interface purchaseCartModel {
   invoiceID: number;
+  invoiceStatus: string;
   cart: Array<CartModel>;
 }
 
@@ -74,9 +75,14 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     Array<CartModel> | undefined
   >(dataProduct);
   const [backdrop, setBackdrop] = useState<boolean>(false);
-  const [errorEmployeeSnackbar, setErrorEmployeeSnackbar] = useState<boolean>(false);
+  const [errorEmployeeSnackbar, setErrorEmployeeSnackbar] =
+    useState<boolean>(false);
   const [employee, setEmployee] = useState<Employee>();
-  let purchaseCart: purchaseCartModel = { invoiceID: 0, cart: [] };
+  let purchaseCart: purchaseCartModel = {
+    invoiceID: 0,
+    invoiceStatus: "",
+    cart: [],
+  };
   const {
     register,
     handleSubmit,
@@ -186,27 +192,26 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     };
 
     let invoiceId: number = 0;
+    let invoiceStatus: string = "";
 
     invoiceData.CID = searchCustomer!.CID;
     await axios
       .post(process.env.API_BASE_URL + "invoices", invoiceData)
       .then(function (response) {
         invoiceId = response.data.createdInvoice.IID;
-
+        invoiceStatus = response.data.createdInvoice.IStatus;
         setOpenConfirmDialog(false);
       })
       .catch(function (error) {
         console.log(error);
       });
 
-
-
     for (let index = 0; index < cartOrderData.length; index++) {
       let dataInvoiceDetail: InvoiceDetailCreateModel = {
         INVQty: parseInt(cartOrderData[index][2]),
         INVPrice: cartOrderData[index][4],
         PID: parseInt(cartOrderData[index][0]),
-        IID: invoiceId
+        IID: invoiceId,
       };
       await axios
         .post(process.env.API_BASE_URL + "invoiceDetails", dataInvoiceDetail)
@@ -219,7 +224,11 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     }
     setCreateInvoiceAlert(true);
     setBackdrop(false);
-    purchaseCart = { invoiceID: invoiceId, cart: dataProductCart! };
+    purchaseCart = {
+      invoiceID: invoiceId,
+      invoiceStatus: invoiceStatus,
+      cart: dataProductCart!,
+    };
     console.log(purchaseCart);
     router.push("invoice/" + JSON.stringify(purchaseCart));
     deleteCookie("selectProductCookies");
@@ -232,7 +241,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => { } },
+              { buttonTitle: "Receive", onClick: () => {} },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -240,7 +249,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => { } },
+              { buttonTitle: "Login", onClick: () => {} },
             ]}
             id={"HomeAppBar"}
           />
@@ -295,7 +304,9 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                       helperText={errors.search_customer?.message?.toString()}
                       error={errors.search_customer?.message ? true : false}
                     />
-                     <FormHelperText id="outlined-weight-helper-text"><Link href="/add_customer">Add New Customer</Link></FormHelperText>
+                    <FormHelperText id="outlined-weight-helper-text">
+                      <Link href="/add_customer">Add New Customer</Link>
+                    </FormHelperText>
                   </Box>
                 </div>
               </div>
@@ -380,7 +391,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomTable
             deleteAble={true}
             total={true}
-            btCaptionTitle="Order"
+            btCaption={{ btCaptionTitle: "Order" }}
             onOrder={(data) => {
               if (searchCustomer != undefined || searchCustomer) {
                 setOpenConfirmDialog(true);
@@ -423,7 +434,11 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           </Alert>
         </Snackbar>
 
-        <Snackbar open={employeeOpen} autoHideDuration={3000} onClose={handleClose}>
+        <Snackbar
+          open={employeeOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
           <Alert
             onClose={handleClose}
             severity="success"

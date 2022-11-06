@@ -9,10 +9,16 @@ import Image from "next/image";
 import Typography from "@mui/material/Typography/Typography";
 import Button from "@mui/material/Button/Button";
 import { CartModel } from "model/cart_model";
+import IconButton from "@mui/material/IconButton/IconButton";
 
 interface columnTable {
   title: string;
   style: string;
+}
+
+interface buttonProps {
+  btCaptionTitle?: String;
+  disable?: boolean;
 }
 
 interface customTableProps {
@@ -21,8 +27,8 @@ interface customTableProps {
   total?: boolean;
   deleteAble?: boolean;
   customer?: string;
-  btCaptionTitle?: String;
-  onOpen?: (id: number) => void;
+  btCaption?: buttonProps;
+  onOpen?: (id: number, status?: string) => void;
   onDelete?: (product: string) => void;
   onPurchase?: () => void;
   onOrder?: (order: Array<Array<string>>) => void;
@@ -79,6 +85,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                     <Button
                       type="submit"
                       variant="contained"
+                      disabled={props.btCaption?.disable}
                       onClick={() => {
                         props.onOrder?.(props.data!);
                       }}
@@ -102,7 +109,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                         backgroundColor: "#4caf50",
                       }}
                     >
-                      {props.btCaptionTitle}
+                      {props.btCaption?.btCaptionTitle}
                     </Button>
                   ) : (
                     <Button
@@ -129,7 +136,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                         backgroundColor: "#4caf50",
                       }}
                     >
-                      {props.btCaptionTitle}
+                      {props.btCaption?.btCaptionTitle}
                     </Button>
                   )}
                 </div>
@@ -168,8 +175,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
               <TableRow
                 id="table-row"
                 onClick={() => {
-                  console.log(row[1]);
-                  props.onOpen?.(parseInt(row[0]));
+                  props.onOpen?.(parseInt(row[0]), row[1]);
                 }}
                 style={{ ...getStripedStyle(index) }}
                 key={index}
@@ -205,15 +211,17 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                 })}
                 {props.deleteAble ? (
                   <TableCell width="10%" align="right">
-                    <Image
-                      src="/trash.svg"
-                      width={30}
-                      height={30}
-                      id="trash-icon"
-                      onClick={(e) => {
-                        props.onDelete?.(row[1]);
-                      }}
-                    />
+                    <div className="z-40">
+                      <Image
+                        src="/trash.svg"
+                        width={30}
+                        height={30}
+                        id="trash-icon"
+                        onClick={(e) => {
+                          props.onDelete?.(row[1]);
+                        }}
+                      />
+                    </div>
                   </TableCell>
                 ) : (
                   <></>
