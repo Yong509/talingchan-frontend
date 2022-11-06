@@ -267,7 +267,13 @@ const Receive = (props: pageProps) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              {
+                buttonTitle: "Receive",
+                onClick: (e) => {
+                  e.preventDefault();
+                  router.push("/receive/");
+                },
+              },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -275,7 +281,12 @@ const Receive = (props: pageProps) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              {
+                buttonTitle: "Login",
+                onClick: (e) => {
+                  router.push("/login");
+                },
+              },
             ]}
             id={"HomeAppBar"}
           />

@@ -241,7 +241,13 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              {
+                buttonTitle: "Receive",
+                onClick: (e) => {
+                  e.preventDefault();
+                  router.push("/receive/");
+                },
+              },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -249,7 +255,12 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              {
+                buttonTitle: "Login",
+                onClick: (e) => {
+                  router.push("/login");
+                },
+              },
             ]}
             id={"HomeAppBar"}
           />

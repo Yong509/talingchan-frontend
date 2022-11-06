@@ -15,7 +15,13 @@ const AddProduct: NextPage = (props) => {
           <CustomAppBar
             id={"addCustomerBar"}
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              {
+                buttonTitle: "Receive",
+                onClick: (e) => {
+                  e.preventDefault();
+                  router.push("/receive/");
+                },
+              },
               { buttonTitle: "Cart", onClick: () => {} },
               {
                 buttonTitle: "Login",
