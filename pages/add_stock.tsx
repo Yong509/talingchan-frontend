@@ -1,16 +1,16 @@
-import type { GetServerSideProps, NextPage } from "next";
-import CustomAppBar from "components/common/custom_app_bar";
-import SearchForm from "components/search/search_form";
-import TextField from "@mui/material/TextField";
-import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
-import ProductCard from "components/common/product_card";
-import { ProductPayload } from "model/product_model";
-import React, { useEffect, useState } from "react";
+import { Grid, Typography } from "@mui/material";
 import axios from "axios";
-import { UnitPayload } from "model/unit_model";
-import { useRouter } from "next/router";
-import { CartModel } from "model/cart_model";
+import CustomAppBar from "components/common/custom_app_bar";
+import ProductCard from "components/common/product_card";
+import AddStockCard from "components/product/add_stock_card";
+import SearchForm from "components/search/search_form";
 import { getCookie, setCookie } from "cookies-next";
+import { CartModel } from "model/cart_model";
+import { ProductPayload } from "model/product_model";
+import { UnitPayload } from "model/unit_model";
+import { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 interface pageProps {
   data?: Array<ProductPayload>;
@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-const Home: NextPage = (props: pageProps) => {
+const AddStock: NextPage = (props: pageProps) => {
   const router = useRouter();
   const [searchProduct, setSearchProduct] = useState<string>("");
   const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
@@ -75,8 +75,8 @@ const Home: NextPage = (props: pageProps) => {
         searchProduct == item.PID.toString()
       ) {
         return (
-          <React.Fragment key={item.PID}>
-            <ProductCard
+          <Grid item xs={1} key={item.PID}>
+            <AddStockCard
               product={{
                 PID: item.PID,
                 PName: item.PName,
@@ -94,7 +94,7 @@ const Home: NextPage = (props: pageProps) => {
                 ]);
               }}
             />
-          </React.Fragment>
+          </Grid>
         );
       }
     });
@@ -112,7 +112,7 @@ const Home: NextPage = (props: pageProps) => {
             color: "black",
           }}
         >
-          Not found {searchProduct}
+          <h1 className="add-subheading">Not found {searchProduct}</h1>
         </Typography>
       );
     }
@@ -141,12 +141,14 @@ const Home: NextPage = (props: pageProps) => {
     setErrorOpen(false);
     setErrorQuantityOpen(false);
   };
+
   return (
     <>
       <div className="bg-white">
         <div className="w-full">
           <CustomAppBar
             title="Talingchan Fertilizer"
+            id={"AddStockBar"}
             button={[
               {
                 buttonTitle: "Receive",
@@ -165,109 +167,65 @@ const Home: NextPage = (props: pageProps) => {
               {
                 buttonTitle: "Report",
                 onClick: (e) => {
+                  e.preventDefault();
                   router.push("/report/");
                 },
               },
             ]}
-            id={"HomeAppBar"}
           />
-        </div>
-        <div className="pt-44">
-          <div>
-            <SearchForm
-              onChange={(value) => {
-                setSearchProduct(value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="pt-24">
-          <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <div className="pt-44" />
+          <Grid container spacing={2} columns={6}>
+            <Grid item xs={1}></Grid>
+            <Grid item xs={4}>
+              <h1 className="add-heading">Add Stock</h1>
+              <h1 className="add-subheading">add quantity to stock</h1>
+              <div className="pt-10"></div>
+              <div>
+                <SearchForm
+                  onChange={(value) => {
+                    setSearchProduct(value);
+                  }}
+                />
+                <div className="pt-10"></div>
+              </div>
+            </Grid>
+            <Grid item xs={1}></Grid>
+          </Grid>
+          <div className="pt-10"></div>
+          <div className="add-body">
+          <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
             {searchProduct.length == 0
               ? props.data?.map((itemProduct, index) => {
                   return (
-                    <React.Fragment key={itemProduct.PID}>
-                      <ProductCard
-                        product={{
-                          PID: itemProduct.PID,
-                          PName: itemProduct.PName,
-                          PDescription: itemProduct.PDescription,
-                          PPrice: itemProduct.PPrice,
-                          PInStock: itemProduct.PInStock,
-                          UID: itemProduct.UID,
-                          PUnit: itemProduct.PUnit,
-                          PPicture: itemProduct.PPicture,
-                        }}
-                        onSelectProduct={(product) => {
-                          handleClick(product);
-                          let errorAddMore = false;
-                          let haveItem = false;
-                          let newProduct = selectProduct.map((item) => {
-                            if (item.name == product.name) {
-                              if (
-                                item.quantity + product.quantity <=
-                                itemProduct.PInStock
-                              ) {
-                                item.quantity += product.quantity;
-                                haveItem = true;
-                                return item;
-                              } else {
-                                errorAddMore = true;
-                                setErrorQuantityOpen(true);
-                              }
-                            }
-                            return item;
-                          });
-                          if (!errorAddMore) {
-                            if (!haveItem) {
-                              newProduct = [...newProduct, product];
-                            }
-                            setCookie(
-                              "selectProductCookies",
-                              JSON.stringify(newProduct)
-                            );
-                            setSelectProduct(newProduct);
-                          }
-                        }}
-                      />
-                    </React.Fragment>
+                    <Grid container spacing={2} columns={3} key={itemProduct.PID}>
+                      <Grid item xs={1} >
+                        <AddStockCard
+                          product={{
+                            PID: itemProduct.PID,
+                            PName: itemProduct.PName,
+                            PDescription: itemProduct.PDescription,
+                            PPrice: itemProduct.PPrice,
+                            PInStock: itemProduct.PInStock,
+                            UID: itemProduct.UID,
+                            PUnit: itemProduct.PUnit,
+                            PPicture: itemProduct.PPicture,
+                          }}
+                          onSelectProduct={(product) => {
+                            //handleClick(product);
+                            console.log(product);
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
                   );
                 })
               : showData()}
           </div>
+          </div>
         </div>
-        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-          <Alert
-            onClose={handleClose}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            Added {addProduct?.quantity} of {addProduct?.name} successfully!
-          </Alert>
-        </Snackbar>
-
-        <Snackbar
-          open={errorQuantityOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
-        >
-          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
-            You cannot add more than product instock
-          </Alert>
-        </Snackbar>
-
-        <Snackbar
-          open={errorOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
-        >
-          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
-            Not found
-          </Alert>
-        </Snackbar>
       </div>
     </>
   );
 };
 
-export default Home;
+export default AddStock;
