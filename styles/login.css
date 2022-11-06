@@ -1,27 +1,41 @@
-
-
-
-
-.body-login{
-    display: flex;
-    flex-direction: row;
+.body-login {
+  display: flex;
+  flex-direction: row;
 }
 
-.add-body{
-    text-align: center;
+.add-body {
+  text-align: center;
 }
 
-.add-body>div{
-    text-align: left;
-    padding: 4em;
-
+.add-body > div {
+  text-align: left;
+  padding: 4em;
 }
 
 .add-heading {
-    font-size: 2em;
-    margin-bottom: 0.5em;
+  font-size: 2em;
+  margin-bottom: 0.5em;
 }
 
 .add-subheading {
-    color : gray;
+  color: gray;
+  white-space: pre-line;
+}
+
+.chart {
+  max-height: 80vh;
+  margin: 0rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-body {
+    margin-left: 2rem ;
+}
+
+.grid-content div {
+    justify-content: center;
+    align-items: center;
 }

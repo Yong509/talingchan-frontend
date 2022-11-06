@@ -16,10 +16,28 @@ const AddCustomer: NextPage = (props) => {
                     <CustomAppBar 
                         id ={"addCustomerBar"}
                         button={[
-                            { buttonTitle: "Receive", onClick: () => {} },
-                            { buttonTitle: "Cart", onClick: () => {} },
-                            { buttonTitle: "Login", onClick: (e) => {router.push('/login');} },
-                        ]}
+                            {
+                              buttonTitle: "Receive",
+                              onClick: (e) => {
+                                e.preventDefault();
+                                router.push("/receive/");
+                              },
+                            },
+                            {
+                              buttonTitle: "Cart",
+                              onClick: (e) => {
+                                e.preventDefault();
+                                router.push("/cart/");
+                              },
+                            },
+                            {
+                              buttonTitle: "Report",
+                              onClick: (e) => {
+                                e.preventDefault();
+                                router.push("/report/");
+                              },
+                            },
+                          ]}
                     />
                     <div className="pt-44">
                     </div>
