@@ -2,11 +2,13 @@ import { LabelRounded } from "@mui/icons-material";
 import { Button, Grid } from "@mui/material";
 import axios, { Axios, AxiosStatic } from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
+import CustomTable from "components/common/custom_table";
 import ReportChart from "components/common/report_chart";
 import { ProductReport } from "model/product_report";
 import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let data: Array<ProductReport> = [];
@@ -39,6 +41,7 @@ const Report = (data: any) => {
   console.log(keyData);
 
   for (let index = 0; index < data.data.length; index++) {
+    console.log('loop :'+ data.data[index][keyData[1]]);
     label.push(data.data[index][keyData[1]]);
     dataSet.push(data.data[index][keyData[0]]["INVQty"]);
   }
@@ -116,7 +119,7 @@ const Report = (data: any) => {
                 }}
                 onClick={(e) => {
                   e.preventDefault();
-                  router.push("/");
+                  router.push("/add_stock/");
                 }}
               >
                 Add Stock
@@ -124,6 +127,38 @@ const Report = (data: any) => {
             </Grid>
             <Grid item xs={1} sx={{ display: { xs: "none", md: "block" }}} />
           </Grid>
+          <div className="pt-20"></div>
+          <Grid container spacing={2} columns={8}>
+            <Grid item xs={1} sx={{ display: { xs: "none", md: "block" }}}/>
+            <Grid item xs={5}>
+              <h1 className="add-heading">Stock</h1>
+              <h1 className="add-subheading">add quantity to stock</h1>
+              {/* <CustomTable
+                tableHead={[
+                  { title: "Invoice no", style: "" },
+                  { title: "Status", style: "" },
+                  { title: "Date", style: "" },
+                  { title: "Customer", style: "" },
+                  { title: "Employee", style: "" },
+                ]}
+                data={data.map((item) => {
+                  return [
+                    String(item.IID),
+                    String(item.IStatus),
+                    item.IDate,
+                    item.CNAME,
+                    item.ENAME,
+                  ];
+                })}
+                onOpen={(id, status) => {
+                  handleClickReceive(id, status!);
+                }}
+              /> */}
+            </Grid>
+            <Grid item xs={1}/>
+            <Grid item xs={1} sx={{ display: { xs: "none", md: "block" }}}/>
+          </Grid>
+
           <div className="pt-40"></div>
         </div>
       </div>
