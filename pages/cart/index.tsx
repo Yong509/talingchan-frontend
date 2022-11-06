@@ -252,13 +252,13 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
-                  router.push("/cart/");
+                  // router.push("/cart/");
                 },
               },
               {
-                buttonTitle: "Login",
+                buttonTitle: "Report",
                 onClick: (e) => {
-                  router.push("/login");
+                  router.push("/report/");
                 },
               },
             ]}

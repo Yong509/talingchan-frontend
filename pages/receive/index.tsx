@@ -14,18 +14,11 @@ import { Employee } from "model/employee_model";
 import { InvoiceDetailModel } from "model/invoice_detail_model";
 import { InvoiceModel } from "model/invoice_model";
 import { ProductPayload } from "model/product_model";
+import { ReceiveModel } from "model/receive_model";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-interface receiveModel {
-  IID: number;
-  IStatus: string;
-  IDate: string;
-  CNAME: string;
-  ENAME: string;
-  Total: number;
-}
 
 interface purchaseCartModel {
   invoiceID: number;
@@ -38,14 +31,14 @@ interface productCart {
 }
 
 interface pageProps {
-  receive: Array<receiveModel>;
+  receive: Array<ReceiveModel>;
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   let invoice: Array<InvoiceModel> = [
     { IID: 0, IStatus: "", IDate: "", CID: 0, EmpID: 0 },
   ];
-  let receive: Array<receiveModel> = [
+  let receive: Array<ReceiveModel> = [
     {
       IID: 0,
       IStatus: "",
@@ -271,7 +264,7 @@ const Receive = (props: pageProps) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
-                  router.push("/receive/");
+                  // router.push("/receive/");
                 },
               },
               {
@@ -282,9 +275,9 @@ const Receive = (props: pageProps) => {
                 },
               },
               {
-                buttonTitle: "Login",
+                buttonTitle: "Report",
                 onClick: (e) => {
-                  router.push("/login");
+                  router.push("/report/");
                 },
               },
             ]}

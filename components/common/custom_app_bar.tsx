@@ -8,6 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Toolbar, IconButton, Button, Drawer } from "@mui/material";
+import { useRouter } from "next/router";
 
 interface buttonProps {
   buttonTitle: string;
@@ -24,6 +25,7 @@ interface appBarProps {
 const drawerWidth = 240;
 
 const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
+  const router = useRouter();
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -75,6 +77,7 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
               variant="h6"
               component="div"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+              onClick={()=>{router.push('/')}}
             >
               {props.title ? props.title : "Talingchan Fertilizer"}
             </Typography>

@@ -163,9 +163,9 @@ const Home: NextPage = (props: pageProps) => {
                 },
               },
               {
-                buttonTitle: "Login",
+                buttonTitle: "Report",
                 onClick: (e) => {
-                  router.push("/login");
+                  router.push("/report/");
                 },
               },
             ]}
