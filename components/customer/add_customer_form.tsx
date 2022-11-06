@@ -19,8 +19,8 @@ const AddCustomerForm: React.FC = () => {
   } = useForm();
 
   const customer: Customer = {
-    CName: watch("name"),
-    CTel: watch("tel"),
+    CName: watch("customerName"),
+    CTel: watch("customerTel"),
   };
 
   const addCustomer = async () => {

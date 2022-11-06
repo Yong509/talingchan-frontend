@@ -29,9 +29,9 @@ const AddCustomer: NextPage = (props) => {
                 },
               },
               {
-                buttonTitle: "Login",
+                buttonTitle: "Report",
                 onClick: (e) => {
-                  router.push("/login");
+                  router.push("/report/");
                 },
               },
             ]}
