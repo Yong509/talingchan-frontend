@@ -3,3 +3,11 @@ export interface InvoiceCreateModel {
   CID: number;
   EmpID: number;
 }
+
+export interface InvoiceModel {
+  IID: number,
+  IStatus: string,
+  IDate: string,
+  CID: number,
+  EmpID: number
+}
