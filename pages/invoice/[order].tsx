@@ -124,7 +124,13 @@ const InvoicePage: NextPage = () => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => {} },
+              {
+                buttonTitle: "Receive",
+                onClick: (e) => {
+                  e.preventDefault();
+                  router.push("/receive/");
+                },
+              },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -132,7 +138,12 @@ const InvoicePage: NextPage = () => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => {} },
+              {
+                buttonTitle: "Login",
+                onClick: (e) => {
+                  router.push("/login");
+                },
+              },
             ]}
             id={"HomeAppBar"}
           />

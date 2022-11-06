@@ -29,7 +29,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       console.log(error);
     });
 
-
   await axios
     .get(process.env.API_BASE_URL + "units")
     .then(function (response) {
@@ -45,7 +44,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         data[index].PUnit = unitProduct[j].UDetail;
       }
     }
-
   }
   return {
     props: {
@@ -53,7 +51,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     },
   };
 };
-
 
 const Home: NextPage = (props: pageProps) => {
   const router = useRouter();
@@ -151,7 +148,13 @@ const Home: NextPage = (props: pageProps) => {
           <CustomAppBar
             title="Talingchan Fertilizer"
             button={[
-              { buttonTitle: "Receive", onClick: () => { } },
+              {
+                buttonTitle: "Receive",
+                onClick: (e) => {
+                  e.preventDefault();
+                  router.push("/receive/");
+                },
+              },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
@@ -159,7 +162,12 @@ const Home: NextPage = (props: pageProps) => {
                   router.push("/cart/");
                 },
               },
-              { buttonTitle: "Login", onClick: () => { } },
+              {
+                buttonTitle: "Login",
+                onClick: (e) => {
+                  router.push("/login");
+                },
+              },
             ]}
             id={"HomeAppBar"}
           />
@@ -177,52 +185,54 @@ const Home: NextPage = (props: pageProps) => {
           <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {searchProduct.length == 0
               ? props.data?.map((itemProduct, index) => {
-                return (
-                  <React.Fragment key={itemProduct.PID}>
-                    <ProductCard
-                      product={{
-                        PID: itemProduct.PID,
-                        PName: itemProduct.PName,
-                        PDescription: itemProduct.PDescription,
-                        PPrice: itemProduct.PPrice,
-                        PInStock: itemProduct.PInStock,
-                        UID: itemProduct.UID,
-                        PUnit: itemProduct.PUnit,
-                        PPicture: itemProduct.PPicture,
-                      }}
-                      onSelectProduct={(product) => {
-
-                        handleClick(product);
-                        let errorAddMore = false;
-                        let haveItem = false;
-                        let newProduct = selectProduct.map((item) => {
-                          if (item.name == product.name) {
-                            if (item.quantity + product.quantity <= itemProduct.PInStock) {
-                              item.quantity += product.quantity;
-                              haveItem = true;
-                              return item;
-                            }else{
-                              errorAddMore = true;
-                              setErrorQuantityOpen(true);
+                  return (
+                    <React.Fragment key={itemProduct.PID}>
+                      <ProductCard
+                        product={{
+                          PID: itemProduct.PID,
+                          PName: itemProduct.PName,
+                          PDescription: itemProduct.PDescription,
+                          PPrice: itemProduct.PPrice,
+                          PInStock: itemProduct.PInStock,
+                          UID: itemProduct.UID,
+                          PUnit: itemProduct.PUnit,
+                          PPicture: itemProduct.PPicture,
+                        }}
+                        onSelectProduct={(product) => {
+                          handleClick(product);
+                          let errorAddMore = false;
+                          let haveItem = false;
+                          let newProduct = selectProduct.map((item) => {
+                            if (item.name == product.name) {
+                              if (
+                                item.quantity + product.quantity <=
+                                itemProduct.PInStock
+                              ) {
+                                item.quantity += product.quantity;
+                                haveItem = true;
+                                return item;
+                              } else {
+                                errorAddMore = true;
+                                setErrorQuantityOpen(true);
+                              }
                             }
+                            return item;
+                          });
+                          if (!errorAddMore) {
+                            if (!haveItem) {
+                              newProduct = [...newProduct, product];
+                            }
+                            setCookie(
+                              "selectProductCookies",
+                              JSON.stringify(newProduct)
+                            );
+                            setSelectProduct(newProduct);
                           }
-                          return item;
-                        });
-                        if(!errorAddMore){
-                        if (!haveItem) {
-                          newProduct = [...newProduct, product];
-                        }
-                        setCookie(
-                          "selectProductCookies",
-                          JSON.stringify(newProduct)
-                        );
-                        setSelectProduct(newProduct);
-                        }
-                      }}
-                    />
-                  </React.Fragment>
-                );
-              })
+                        }}
+                      />
+                    </React.Fragment>
+                  );
+                })
               : showData()}
           </div>
         </div>
@@ -242,7 +252,7 @@ const Home: NextPage = (props: pageProps) => {
           onClose={handleClose}
         >
           <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
-           You cannot add more than product instock
+            You cannot add more than product instock
           </Alert>
         </Snackbar>
 
