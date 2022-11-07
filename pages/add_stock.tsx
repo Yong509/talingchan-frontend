@@ -1,4 +1,4 @@
-import { Grid, Typography } from "@mui/material";
+import { Backdrop, CircularProgress, Grid, Typography } from "@mui/material";
 import axios from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import ProductCard from "components/common/product_card";
@@ -60,6 +60,7 @@ const AddStock: NextPage = (props: pageProps) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [errorQuantityOpen, setErrorQuantityOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
+  const [backdrop, setBackdrop] = useState<boolean>(false);
 
   useEffect(() => {
     let dataProduct: Array<CartModel> = getCookie("selectProductCookies")
@@ -154,6 +155,7 @@ const AddStock: NextPage = (props: pageProps) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/receive/");
                 },
               },
@@ -161,6 +163,7 @@ const AddStock: NextPage = (props: pageProps) => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/cart/");
                 },
               },
@@ -168,6 +171,7 @@ const AddStock: NextPage = (props: pageProps) => {
                 buttonTitle: "Report",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/report/");
                 },
               },
@@ -193,36 +197,47 @@ const AddStock: NextPage = (props: pageProps) => {
           </Grid>
           <div className="pt-10"></div>
           <div className="add-body">
-          <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
-            {searchProduct.length == 0
-              ? props.data?.map((itemProduct, index) => {
-                  return (
-                    <Grid container spacing={2} columns={3} key={itemProduct.PID}>
-                      <Grid item xs={1} >
-                        <AddStockCard
-                          product={{
-                            PID: itemProduct.PID,
-                            PName: itemProduct.PName,
-                            PDescription: itemProduct.PDescription,
-                            PPrice: itemProduct.PPrice,
-                            PInStock: itemProduct.PInStock,
-                            UID: itemProduct.UID,
-                            PUnit: itemProduct.PUnit,
-                            PPicture: itemProduct.PPicture,
-                          }}
-                          onSelectProduct={(product) => {
-                            //handleClick(product);
-                            console.log(product);
-                          }}
-                        />
+            <div className="grid grid-cols-1 gap-y-12 gap-x-auto h-full justify-items-center py-10  xs:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
+              {searchProduct.length == 0
+                ? props.data?.map((itemProduct, index) => {
+                    return (
+                      <Grid
+                        container
+                        spacing={2}
+                        columns={3}
+                        key={itemProduct.PID}
+                      >
+                        <Grid item xs={1}>
+                          <AddStockCard
+                            product={{
+                              PID: itemProduct.PID,
+                              PName: itemProduct.PName,
+                              PDescription: itemProduct.PDescription,
+                              PPrice: itemProduct.PPrice,
+                              PInStock: itemProduct.PInStock,
+                              UID: itemProduct.UID,
+                              PUnit: itemProduct.PUnit,
+                              PPicture: itemProduct.PPicture,
+                            }}
+                            onSelectProduct={(product) => {
+                              //handleClick(product);
+                              console.log(product);
+                            }}
+                          />
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  );
-                })
-              : showData()}
-          </div>
+                    );
+                  })
+                : showData()}
+            </div>
           </div>
         </div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </>
   );

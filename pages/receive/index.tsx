@@ -19,7 +19,6 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-
 interface purchaseCartModel {
   invoiceID: number;
   invoiceStatus: string;
@@ -264,19 +263,23 @@ const Receive = (props: pageProps) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
-                  // router.push("/receive/");
+                  setOpenBackDrop(true);
+                  router.push("/receive/");
                 },
               },
               {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
+                  setOpenBackDrop(true);
                   router.push("/cart/");
                 },
               },
               {
                 buttonTitle: "Report",
                 onClick: (e) => {
+                  e.preventDefault();
+                  setOpenBackDrop(true);
                   router.push("/report/");
                 },
               },
