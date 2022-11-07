@@ -184,6 +184,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                     return (
                       <TableCell
                         key={index}
+                        id={`table-cell-${index}`}
                         align="left"
                         onClick={() => {
                           props.onOpen?.(parseInt(row[0]), row[1]);
