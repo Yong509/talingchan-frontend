@@ -69,11 +69,13 @@ const Home: NextPage = (props: pageProps) => {
   }, []);
 
   const showData = () => {
+    let found = false;
     const data = props.data?.map((item, index) => {
       if (
         item.PName.toUpperCase().includes(searchProduct.toUpperCase()) ||
         searchProduct == item.PID.toString()
       ) {
+        found = true;
         return (
           <React.Fragment key={item.PID}>
             <ProductCard
@@ -98,23 +100,24 @@ const Home: NextPage = (props: pageProps) => {
         );
       }
     });
-    console.log(data);
-    if (!data || data[0] == undefined) {
-      console.log("Not found");
-      return (
-        <Typography
-          id="total_price"
-          variant="body1"
-          color="text.secondary"
-          sx={{
-            pt: 1,
-            fontWeight: "750",
-            color: "black",
-          }}
-        >
-          Not found {searchProduct}
-        </Typography>
-      );
+    if (found == false) {
+      if (!data || data[0] == undefined) {
+        console.log("Not found");
+        return (
+          <Typography
+            id="total_price"
+            variant="body1"
+            color="text.secondary"
+            sx={{
+              pt: 1,
+              fontWeight: "750",
+              color: "black",
+            }}
+          >
+            Not found {searchProduct}
+          </Typography>
+        );
+      }
     }
     return data;
   };
