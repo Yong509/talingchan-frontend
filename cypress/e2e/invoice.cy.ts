@@ -36,17 +36,17 @@ describe("Invoice page", () => {
       pumpInvoicePage();
     });
 
-    // it("should render correctly", () => {
-    //   cy.get("#cart_title").should("have.text", "Invoice");
-    //   cy.get("#invoice-table");
-    //   cy.get(".MuiTableCell-alignLeft").should("have.text", 1);
-    //   cy.get("#table-row > :nth-child(2)").should("have.text", "DR. SOIL");
-    //   cy.get("#table-row > :nth-child(3)").should("have.text", 5);
-    //   cy.get("#table-row > :nth-child(4)").should("have.text", 1500);
-    //   cy.get("#table-row > :nth-child(5)").should("have.text", 7500);
-    //   cy.get("#total_price").should("have.text", 7500);
-    //   cy.get("#order-btn").should("have.text", "Purchase");
-    // });
+    it("should render correctly", () => {
+      cy.get("#cart_title").should("have.text", "Invoice");
+      cy.get("#invoice-table");
+      cy.get(".MuiTableCell-alignLeft").should("have.text", 1);
+      cy.get("#table-row > :nth-child(2)").should("have.text", "DR. SOIL");
+      cy.get("#table-row > :nth-child(3)").should("have.text", 5);
+      cy.get("#table-row > :nth-child(4)").should("have.text", 1500);
+      cy.get("#table-row > :nth-child(5)").should("have.text", 7500);
+      cy.get("#total_price").should("have.text", 7500);
+      cy.get("#order-btn").should("have.text", "Purchase");
+    });
 
     it("should able to purchase order", () => {
       cy.get("#order-btn").click();
