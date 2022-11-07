@@ -9,23 +9,24 @@ import {
   TextField,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const AddProductForm: React.FC = () => {
-    
   const dumbUnit = ["Kg", "Bag"];
 
-  const [file, setFile] = useState(null);
+  const [file, setFile] = useState<any>();
   const [fileDataURL, setFileDataURL] = useState(null);
-
+  const [uploadingStatus, setUploadingStatus] = useState<any>();
+  const [uploadedFile, setUploadedFile] = useState<any>();
   const [selectUnit, setSelectUnit] = useState<number>(0);
   const [errorSelect, setErrorSelect] = useState<boolean>(false);
-
+  const BUCKET_URL = "https://tc-storage-v1.s3.ap-southeast-1.amazonaws.com/";
   const changePictureHandler = (e: any) => {
     const file = e.target.files[0];
     console.log(file);
-    setFile(file);
+    setFile(e.target.files[0]);
   };
 
   useEffect(() => {
@@ -59,12 +60,27 @@ const AddProductForm: React.FC = () => {
     reset,
   } = useForm();
 
-  // const product : ProductModel {
-  //     id : 0,
-  //     name : watch('productName'),
-  //     description : watch(),
+  const uploadFile = async () => {
+    setUploadingStatus("Uploading the file to AWS S3");
 
-  // }
+    let { data } = await axios.post("/api/s3/uploadFile", {
+      name: file.name,
+      type: file.type,
+    });
+
+    console.log(data);
+
+    const url = data.url;
+    let { data: newData } = await axios.put(url, file, {
+      headers: {
+        "Content-type": file.type,
+        "Access-Control-Allow-Origin": "*",
+      },
+    });
+
+    setUploadedFile(BUCKET_URL + file.name);
+    setFile(null);
+  };
 
   return (
     <>
@@ -77,7 +93,9 @@ const AddProductForm: React.FC = () => {
 
             <Box
               component="form"
-              onSubmit={handleSubmit((e) => {})}
+              onSubmit={handleSubmit((e) => {
+                uploadFile();
+              })}
               sx={{ mt: 1 }}
             >
               {fileDataURL ? (

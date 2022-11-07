@@ -1,8 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-const BUCKET_URL =
-  "https://talingchan-storage-v1.s3.ap-southeast-1.amazonaws.com/";
+const BUCKET_URL = "https://tc-storage-v1.s3.ap-southeast-1.amazonaws.com/";
 
 const TestS3 = () => {
   const [file, setFile] = useState<any>();

@@ -22,7 +22,6 @@
     "cookies-next": "^2.1.1",
     "next": "12.3.1",
     "react": "18.2.0",
-    "react-aws-s3-typescript": "^1.1.4",
     "react-chartjs-2": "^4.3.1",
     "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",

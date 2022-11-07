@@ -3,8 +3,9 @@ import S3 from "aws-sdk/clients/s3";
 
 const s3 = new S3({
   region: "ap-southeast-1",
-  accessKeyId: "AKIA2FTCLXV5ZYPDBR6U",
-  secretAccessKey: "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",
+  accessKeyId: process.env.S3_UPLOAD_KEY,
+  secretAccessKey: process.env.S3_UPLOAD_SECRET,
+  signatureVersion: "v4",
 });
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
@@ -16,9 +17,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let { name, type } = req.body;
 
     const fileParams = {
-      Bucket: process.env.BUCKET_NAME,
+      Bucket: "tc-storage-v1",
       Key: name,
-      Expires: 600,
+      Expires: 6000,
       ContentType: type,
     };
 
