@@ -46,7 +46,6 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
   return (
     <>
       <form
-        id="product_card"
         onSubmit={handleSubmit((e) => {
           const tempSelectProduct: CartModel[] = selectProduct;
           if (selectQuantity == 0) {
@@ -64,6 +63,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
         })}
       >
         <Box
+          id={`product-card-${props.product.PID}`}
           sx={{
             "& > :not(style)": {
               width: {
@@ -183,7 +183,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                           ? setSelectQuantity(0)
                           : setSelectQuantity(selectQuantity - 1);
                       }}
-                      disabled={props.product.PInStock <= 0 ? true : false }
+                      disabled={props.product.PInStock <= 0 ? true : false}
                       style={{
                         maxWidth: "90px",
                         backgroundColor: "#EBEBEB",
@@ -206,7 +206,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                           textAlign: "center",
                         },
                       }}
-                      disabled={props.product.PInStock <= 0 ? true : false }
+                      disabled={props.product.PInStock <= 0 ? true : false}
                       sx={{
                         maxWidth: "90px",
                         height: 34,
@@ -219,7 +219,8 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                         if (
                           parseInt(e.target.value) < 0 ||
                           !e.target.value ||
-                          e.target.value == undefined || isNaN(parseInt(e.target.value))
+                          e.target.value == undefined ||
+                          isNaN(parseInt(e.target.value))
                         ) {
                           setSelectQuantity(0);
                         } else if (
@@ -233,7 +234,7 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                     />
                     <Button
                       id="increase-button"
-                      disabled={props.product.PInStock <= 0 ? true : false }
+                      disabled={props.product.PInStock <= 0 ? true : false}
                       onClick={() => {
                         selectQuantity >= props.product.PInStock
                           ? setSelectQuantity(props.product.PInStock)

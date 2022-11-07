@@ -83,6 +83,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                 <div>
                   {props.onOrder != null ? (
                     <Button
+                      id="purchase-btn"
                       type="submit"
                       variant="contained"
                       disabled={props.btCaption?.disable}
@@ -113,6 +114,7 @@ const CustomTable: React.FC<customTableProps> = (props: customTableProps) => {
                     </Button>
                   ) : (
                     <Button
+                      id="order-btn"
                       type="submit"
                       variant="contained"
                       onClick={props.onPurchase}

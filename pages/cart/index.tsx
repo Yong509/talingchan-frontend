@@ -393,7 +393,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
 
         <div className="pt-18 md:px-16 px-4">
           <Typography
-            id="cart_title"
+            id="employee-name"
             gutterBottom
             component="div"
             align="left"
@@ -405,6 +405,8 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
           >
             Employee : {employee?.EmpName}
           </Typography>
+        </div>
+        <div className="pt-18 md:px-16 px-4" id="custom-table">
           <CustomTable
             deleteAble={true}
             total={true}
