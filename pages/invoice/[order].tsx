@@ -141,10 +141,10 @@ const InvoicePage: NextPage = () => {
                 },
               },
               {
-                buttonTitle: "Login",
+                buttonTitle: "Report",
                 onClick: (e) => {
                   setBackdrop(true);
-                  router.push("/login");
+                  router.push("/report/");
                 },
               },
             ]}
