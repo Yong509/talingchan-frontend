@@ -1,4 +1,4 @@
-import { Padding } from "@mui/icons-material";
+import { FilePresent, Padding } from "@mui/icons-material";
 import {
   Button,
   Card,
@@ -6,13 +6,17 @@ import {
   CardContent,
   CardMedia,
   Divider,
+  FormControl,
   Grid,
   InputLabel,
   OutlinedInput,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
+import axios from "axios";
+import CustomDialog from "components/common/custom_dialog";
 import { CartModel } from "model/cart_model";
 import { ProductPayload } from "model/product_model";
 import { useState } from "react";
@@ -23,12 +27,38 @@ interface AddStockCardProps {
   onSelectProduct?: (product: CartModel) => void;
 }
 
+const updatePrice = async(id:number,price:number) =>{
+  await axios
+  .put(process.env.API_BASE_URL + "products/"+ id,{'PPrice':price} )
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
+const updateStock = async(id:number,quantity:number) =>{
+  await axios
+  .put(process.env.API_BASE_URL + "products/"+ id,{'PInStock':quantity} )
+  .then(function (response) {
+    console.log(response.data);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+}
+
 const AddStockCard: React.FC<AddStockCardProps> = (
   props: AddStockCardProps
 ) => {
-  const [selectQuantity, setSelectQuantity] = useState<number>(0);
-  const [selectProduct, setSelectProduct] = useState<Array<CartModel>>([]);
-  const [errorQuantity, setErrorQuantity] = useState<boolean>(false);
+  const [oldPrice, setOldPrice] = useState<number>(props.product.PPrice);
+  const [oldQuantity ,setOldQuantity] = useState<number>(props.product.PInStock);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+  const [dialogText, setDialogText] = useState<string>("");
+  const [onPrice,setOnPrice] = useState<boolean>(false);
+  const [onQuantity,setOnQuantity] = useState<boolean>(false);
+  const [quantity,setQuantity] = useState<number>(0)
 
   const {
     register,
@@ -39,10 +69,10 @@ const AddStockCard: React.FC<AddStockCardProps> = (
     reset,
   } = useForm();
 
-  const onSubmit =(e:any)=>{
-        console.log('on submit')
-        console.log(e)
-  }
+  const onSubmit = (e: any) => {
+    console.log("on submit");
+    console.log(e);
+  };
 
   return (
     <>
@@ -61,7 +91,7 @@ const AddStockCard: React.FC<AddStockCardProps> = (
         }}
         component="form"
         onSubmit={handleSubmit((e) => {
-            onSubmit(e);
+          onSubmit(e);
         })}
       >
         <Card elevation={3}>
@@ -81,23 +111,6 @@ const AddStockCard: React.FC<AddStockCardProps> = (
               height: "260px",
             }}
           >
-            {/* <Typography
-                id="product_id"
-                gutterBottom
-                component="div"
-                sx={{
-                  paddingTop: 1,
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "-webkit-box",
-                  WebkitLineClamp: "2",
-                  WebkitBoxOrient: "vertical",
-                  fontWeight: "650",
-                  fontSize: "0.82rem",
-                }}
-              >
-                Product ID: {props.product.PID}
-              </Typography> */}
             <Typography
               id="product_name"
               gutterBottom
@@ -141,7 +154,7 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                     fontWeight: "750",
                   }}
                 >
-                  Old Price : {props.product.PPrice} BAHT
+                  Old Price : {oldPrice.toFixed(2)} BAHT
                 </Typography>
               </Grid>
               <Grid item xs={3}>
@@ -161,8 +174,8 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                       message: "Please enter integer or 2 decimal flaot",
                     },
                     min: {
-                      value: 0.5,
-                      message: "Value should be atleast 0.5",
+                      value: 0,
+                      message: "Price should be atleast 0",
                     },
                   })}
                   onBlur={() => {
@@ -181,18 +194,36 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                   style={{
                     borderRadius: "10px",
                     backgroundColor: "#000",
-                    //   margin: 2,
-                    //   paddingTop :2
-                    marginLeft: 5,
+                    marginTop: 18,
+                    marginBottom: 1,
+                    marginRight: 1,
+                    marginLeft: 6,
+                    alignContent: "center",
+                    alignItems: "center",
                   }}
                   onClick={(e) => {
-                    console.log("change clicked");
-                    console.log(e);
+                    console.log("Change Click");
+                    const newPrice: number = Number(watch("newPrice"));
+
+                    if (!Number.isNaN(newPrice) && (newPrice * 100) % 1 === 0) {
+                      console.log("new price : " + newPrice);
+
+                      //dialog
+                      setDialogText(
+                        `Confirm change from ${oldPrice.toFixed(
+                          2
+                        )} baht to ${newPrice.toFixed(2)} baht ?`
+                      );
+                      setOnPrice(true);
+                      setOpenConfirmDialog(true);
+                    }
                   }}
                 >
                   Change
                 </Button>
               </Grid>
+
+              {/* Quantity */}
 
               <Grid item xs={5}>
                 <Divider sx={{ borderBottomWidth: 1, margin: 2 }} />
@@ -208,17 +239,12 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                     padding: "5px",
                   }}
                 >
-                  {`In Stock: ${props.product.PInStock} ${props.product.PUnit}`}
+                  {`In Stock: ${oldQuantity} ${props.product.PUnit}`}
                 </Typography>
               </Grid>
               <Grid item xs={1}>
                 <Button
                   id="decrease_stock_button"
-                  onClick={() => {
-                    selectQuantity <= 0
-                      ? setSelectQuantity(0)
-                      : setSelectQuantity(selectQuantity - 1);
-                  }}
                   style={{
                     maxWidth: "90px",
                     backgroundColor: "#EBEBEB",
@@ -230,14 +256,17 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                     boxShadow: 0,
                   }}
                   variant="contained"
+                  onClick={() => {
+                      quantity! <= 0 ? setQuantity(0) : setQuantity(quantity! - 1);
+                  }}
                 >
                   -
                 </Button>
               </Grid>
               <Grid item xs={1}>
                 <TextField
+                  id="input_stock"
                   size="small"
-                  value={selectQuantity}
                   variant="standard"
                   inputProps={{
                     style: {
@@ -251,22 +280,23 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                     fontSize: { xs: "13px", md: "15px" },
                     padding: "5px",
                   }}
-                  error={errorQuantity}
-                  id="input_stock"
+                  //register
+
+                  value={quantity}
                   onChange={(e) => {
+
+                    if ( Number.isNaN(parseInt(e.target.value))){
+                      setQuantity(0);
+                    }
                     if (
                       parseInt(e.target.value) < 0 ||
                       !e.target.value ||
                       e.target.value == undefined ||
                       isNaN(parseInt(e.target.value))
                     ) {
-                      setSelectQuantity(0);
-                    } else if (
-                      parseInt(e.target.value) >= props.product.PInStock
-                    ) {
-                      setSelectQuantity(props.product.PInStock);
-                    } else {
-                      setSelectQuantity(parseInt(e.target.value));
+                      setQuantity(0);
+                    } else  {
+                      setQuantity(parseInt(e.target.value));
                     }
                   }}
                 />
@@ -274,11 +304,6 @@ const AddStockCard: React.FC<AddStockCardProps> = (
               <Grid item xs={1}>
                 <Button
                   id="increase-button"
-                  onClick={() => {
-                    selectQuantity >= props.product.PInStock
-                      ? setSelectQuantity(props.product.PInStock)
-                      : setSelectQuantity(selectQuantity + 1);
-                  }}
                   style={{
                     width: 20,
                     backgroundColor: "#EBEBEB",
@@ -290,6 +315,9 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                     boxShadow: 0,
                   }}
                   variant="contained"
+                  onClick={() => {
+                      setQuantity(quantity! + 1);
+                  }}
                 >
                   +
                 </Button>
@@ -302,7 +330,18 @@ const AddStockCard: React.FC<AddStockCardProps> = (
                   style={{
                     borderRadius: "10px",
                     backgroundColor: "#4caf50",
-                    marginLeft : '10px'
+                    marginLeft: "10px",
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log("Add Clicked");
+
+                    //dialog
+                    setDialogText(
+                      `Confirm add ${quantity} ${props.product.PUnit}`
+                    );
+                    setOnQuantity(true);
+                    setOpenConfirmDialog(true);
                   }}
                 >
                   Add
@@ -311,6 +350,48 @@ const AddStockCard: React.FC<AddStockCardProps> = (
             </Grid>
           </CardActions>
         </Card>
+        <CustomDialog
+          title={{
+            text: `Confirm?`,
+            color: "black",
+          }}
+          content={dialogText}
+          open={openConfirmDialog}
+          cancelButton={{ text: "cancel", fontColor: "black" }}
+          confirmButton={{
+            text: "confirm",
+            color: "black",
+            fontColor: "white",
+          }}
+          onConfirm={() => {
+
+            if (onPrice) {
+
+              const newPrice:number = Number(watch("newPrice"));
+              //api
+              updatePrice(props.product.PID,newPrice);
+              setOldPrice(newPrice);
+              setOnPrice(false);
+              reset({newPrice:""})
+            }
+
+            if (onQuantity) {
+              //api
+              const newQuantity = oldQuantity + quantity;
+              updateStock(props.product.PID,newQuantity);
+              setOldQuantity(newQuantity);
+              setOnQuantity(false);
+              setQuantity(0);
+            }
+            
+            setOpenConfirmDialog(false);
+          }}
+          onCancel={() => {
+            setOpenConfirmDialog(false);
+            setOnPrice(false);
+            setOnQuantity(false);
+          }}
+        />
       </Box>
     </>
   );
