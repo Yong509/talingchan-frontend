@@ -128,6 +128,7 @@ const InvoicePage: NextPage = () => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/receive/");
                 },
               },
@@ -135,12 +136,14 @@ const InvoicePage: NextPage = () => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/cart/");
                 },
               },
               {
                 buttonTitle: "Login",
                 onClick: (e) => {
+                  setBackdrop(true);
                   router.push("/login");
                 },
               },

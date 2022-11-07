@@ -3,9 +3,12 @@ import type { NextPage } from "next";
 import AddCustomerForm from "components/customer/add_customer_form";
 import { NextResponse } from "next/server";
 import { useRouter } from "next/router";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { useState } from "react";
 
 const AddCustomer: NextPage = (props) => {
   const router = useRouter();
+  const [backdrop, setBackdrop] = useState<boolean>(false);
 
   return (
     <>
@@ -18,6 +21,7 @@ const AddCustomer: NextPage = (props) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/receive/");
                 },
               },
@@ -25,13 +29,14 @@ const AddCustomer: NextPage = (props) => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/cart/");
                 },
               },
               {
                 buttonTitle: "Report",
                 onClick: (e) => {
-                  router.push("/report/");
+                  setBackdrop(true);
                 },
               },
             ]}
@@ -39,6 +44,12 @@ const AddCustomer: NextPage = (props) => {
           <div className="pt-44"></div>
           <AddCustomerForm />
         </div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </>
   );

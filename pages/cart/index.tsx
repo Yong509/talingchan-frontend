@@ -247,6 +247,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/receive/");
                 },
               },
@@ -254,12 +255,15 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
-                  // router.push("/cart/");
+                  setBackdrop(true);
+                  router.push("/cart/");
                 },
               },
               {
                 buttonTitle: "Report",
                 onClick: (e) => {
+                  e.preventDefault();
+                  setBackdrop(true);
                   router.push("/report/");
                 },
               },

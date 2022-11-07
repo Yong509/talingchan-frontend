@@ -2,7 +2,15 @@ import type { GetServerSideProps, NextPage } from "next";
 import CustomAppBar from "components/common/custom_app_bar";
 import SearchForm from "components/search/search_form";
 import TextField from "@mui/material/TextField";
-import { Alert, Box, Button, Snackbar, Typography } from "@mui/material";
+import {
+  Alert,
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 import ProductCard from "components/common/product_card";
 import { ProductPayload } from "model/product_model";
 import React, { useEffect, useState } from "react";
@@ -60,6 +68,7 @@ const Home: NextPage = (props: pageProps) => {
   const [errorOpen, setErrorOpen] = useState(false);
   const [errorQuantityOpen, setErrorQuantityOpen] = useState(false);
   const [addProduct, setAddProduct] = useState<CartModel>();
+  const [backdrop, setBackdrop] = useState<boolean>(false);
 
   useEffect(() => {
     let dataProduct: Array<CartModel> = getCookie("selectProductCookies")
@@ -155,6 +164,7 @@ const Home: NextPage = (props: pageProps) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/receive/");
                 },
               },
@@ -162,12 +172,15 @@ const Home: NextPage = (props: pageProps) => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/cart/");
                 },
               },
               {
                 buttonTitle: "Report",
                 onClick: (e) => {
+                  e.preventDefault();
+                  setBackdrop(true);
                   router.push("/report/");
                 },
               },
@@ -268,6 +281,12 @@ const Home: NextPage = (props: pageProps) => {
             Not found
           </Alert>
         </Snackbar>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </>
   );

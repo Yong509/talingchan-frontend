@@ -1,5 +1,5 @@
 import { LabelRounded } from "@mui/icons-material";
-import { Button, Grid } from "@mui/material";
+import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
 import axios, { Axios, AxiosStatic } from "axios";
 import CustomAppBar from "components/common/custom_app_bar";
 import CustomTable from "components/common/custom_table";
@@ -141,6 +141,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Report = (props: pageProps) => {
   const router = useRouter();
+  const [backdrop, setBackdrop] = useState<boolean>(false);
 
   // console.log(props);
 
@@ -176,6 +177,7 @@ const Report = (props: pageProps) => {
                 buttonTitle: "Receive",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/receive/");
                 },
               },
@@ -183,6 +185,7 @@ const Report = (props: pageProps) => {
                 buttonTitle: "Cart",
                 onClick: (e) => {
                   e.preventDefault();
+                  setBackdrop(true);
                   router.push("/cart/");
                 },
               },
@@ -249,7 +252,9 @@ const Report = (props: pageProps) => {
             <Grid item xs={1} sx={{ display: { xs: "block", md: "block" } }} />
             <Grid item xs={6}>
               <h1 className="add-heading">Invoice</h1>
-              <h1 className="add-subheading">all pre-order & purchase invoice log , november 2022</h1>
+              <h1 className="add-subheading">
+                all pre-order & purchase invoice log , november 2022
+              </h1>
               <div className="pt-20"></div>
               <CustomTable
                 tableHead={[
@@ -278,6 +283,12 @@ const Report = (props: pageProps) => {
 
           <div className="pt-40"></div>
         </div>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
+          open={backdrop}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
       </div>
     </>
   );
