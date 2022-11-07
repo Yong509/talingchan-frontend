@@ -39,7 +39,7 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2 }}>
+      <Typography variant="h6" sx={{ my: 2 }} key="titleText">
         <Link href="/">
           {props.title ? props.title : "Talingchan Fertilizer"}
         </Link>
@@ -77,6 +77,7 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
               <MenuIcon />
             </IconButton>
             <Typography
+              id="titleText"
               variant="h6"
               component="div"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}

@@ -1,15 +1,16 @@
-//cypress example
-
-describe("My First Test", () => {
-  it("Visits the Kitchen Sink", () => {
-    cy.visit("https://example.cypress.io");
-
-    cy.contains("type").click();
-    cy.url().should("include", "/commands/actions");
-
-    cy.get(".action-email")
-      .type("fake@email.com")
-      .should("have.value", "fake@email.com");
+describe("Index page", () => {
+  context("Desktop resolution", () => {
+    beforeEach(() => {
+      cy.viewport(1280, 1080);
+    });
+    it("should render correctly", () => {
+      cy.visit(Cypress.env("BASE_URL"));
+      cy.get(".MuiToolbar-root").find("#titleText");
+      cy.get(".MuiToolbar-root").find("#Receive");
+      cy.get(".MuiToolbar-root").find("#Cart");
+      cy.get(".MuiToolbar-root").find("#Report");
+      cy.get("#product_img").should("have.length", 4);
+    });
   });
 });
 export {};
