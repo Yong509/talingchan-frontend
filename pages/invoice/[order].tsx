@@ -168,7 +168,7 @@ const InvoicePage: NextPage = () => {
         </div>
       </div>
       <div className="pt-24">
-        <div className=" md:px-16 px-4">
+        <div className=" md:px-16 px-4" id="invoice-table">
           <CustomTable
             total={true}
             btCaption={{
