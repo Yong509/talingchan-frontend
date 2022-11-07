@@ -1,4 +1,4 @@
-import { CompressOutlined } from "@mui/icons-material";
+import { CompressOutlined, Route } from "@mui/icons-material";
 import {
   Button,
   Grid,
@@ -10,11 +10,23 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import axios from "axios";
+import { UnitPayload } from "model/unit_model";
+import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
+interface ProductPayload {
+  PName: string;
+  PDescription: string;
+  PPrice: number;
+  PPicture: string;
+  PInStock: number;
+  UID: number;
+}
+
 const AddProductForm: React.FC = () => {
-  const dumbUnit = ["Kg", "Bag"];
+  // console.log(props.unit);
 
   const [file, setFile] = useState<any>();
   const [fileDataURL, setFileDataURL] = useState(null);
@@ -28,6 +40,34 @@ const AddProductForm: React.FC = () => {
     console.log(file);
     setFile(e.target.files[0]);
   };
+
+  const [unit, setUnit] = useState<UnitPayload[]>([]);
+
+  useEffect(() => {
+    let data: UnitPayload[] = [];
+    const getUnit = async () => {
+      await axios
+        .get(process.env.API_BASE_URL + "units")
+        .then(function (response) {
+          for (let index = 0; index < response.data.length; index++) {
+            data.push({
+              UID: response.data[index].UID,
+              UDetail: response.data[index].UDetail,
+            });
+          }
+          setUnit(data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    };
+    getUnit();
+  }, []);
+
+  const dumbUnit: string[] = [];
+  for (let index = 0; index < unit.length; index++) {
+    dumbUnit.push(unit[index].UDetail);
+  }
 
   useEffect(() => {
     let fileReader: any,
@@ -64,8 +104,8 @@ const AddProductForm: React.FC = () => {
     setUploadingStatus("Uploading the file to AWS S3");
 
     let { data } = await axios.post("/api/s3/uploadFile", {
-      name: file.name,
-      type: file.type,
+      name: file?.name,
+      type: file?.type,
     });
 
     console.log(data);
@@ -82,6 +122,36 @@ const AddProductForm: React.FC = () => {
     setFile(null);
   };
 
+  const [uid, setUID] = useState<number>(0);
+
+  const createProduct = async () => {
+    for (let index = 0; index < unit.length; index++) {
+      if (unit[index].UDetail === watch("productUnit")) {
+        setUID(unit[index].UID);
+      }
+    }
+    const payload: ProductPayload = {
+      PName: watch("productName"),
+      PDescription: watch("productDescription"),
+      PPrice: parseFloat(watch("productPrice")),
+      PPicture: BUCKET_URL + file?.name,
+      PInStock: parseFloat(watch("productQuantity")),
+      UID: uid,
+    };
+    console.log(payload);
+
+    await axios
+      .post(process.env.API_BASE_URL + "products/", payload)
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const router = useRouter();
+
   return (
     <>
       <div className="add-body">
@@ -95,6 +165,9 @@ const AddProductForm: React.FC = () => {
               component="form"
               onSubmit={handleSubmit((e) => {
                 uploadFile();
+                //api
+                createProduct();
+                router.push("/");
               })}
               sx={{ mt: 1 }}
             >
