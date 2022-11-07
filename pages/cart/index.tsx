@@ -71,6 +71,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
   const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
   const [cartOrder, setCartOrder] = useState<Array<Array<string>>>([[]]);
   const [createInvoiceAlert, setCreateInvoiceAlert] = useState<boolean>(false);
+  const [cartEmptyError, setCartEmptyError] = useState<boolean>(false);
   const [dataProductCart, setDataProductCart] = useState<
     Array<CartModel> | undefined
   >(dataProduct);
@@ -137,6 +138,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     setErrorCustomerOpen(false);
     setCreateInvoiceAlert(false);
     setErrorEmployeeSnackbar(false);
+    setCartEmptyError(false);
   };
 
   const handleSearchCustomer = async (customer: string) => {
@@ -532,7 +534,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             text: `Confirme Order`,
             color: "black",
           }}
-          content={`You will not be able to edit your order after you place prder. Are you sure you want to order?`}
+          content={`You will not be able to edit your order after you place order. Are you sure you want to order?`}
           open={openConfirmDialog}
           cancelButton={{ text: "cancel", fontColor: "black" }}
           confirmButton={{
@@ -541,13 +543,27 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
             fontColor: "white",
           }}
           onConfirm={() => {
-            handleCreateInvoice(cartOrder);
-            setOpenConfirmDialog(false);
+            if (!cartOrder || cartOrder.length == 0 || cartOrder == undefined) {
+              setCartEmptyError(true);
+            } else {
+              handleCreateInvoice(cartOrder);
+              setOpenConfirmDialog(false);
+            }
           }}
           onCancel={() => {
             setOpenConfirmDialog(false);
           }}
         />
+        <Snackbar
+          open={errorCustomerOpen}
+          autoHideDuration={3000}
+          onClose={handleClose}
+        >
+          <Alert severity="error" onClose={handleClose} sx={{ width: "100%" }}>
+            Cannot place order. Cart is empty.
+          </Alert>
+        </Snackbar>
+
         <Backdrop
           sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer - 1 }}
           open={backdrop}

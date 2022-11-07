@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Toolbar, IconButton, Button, Drawer } from "@mui/material";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface buttonProps {
   buttonTitle: string;
@@ -39,7 +40,9 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
       <Typography variant="h6" sx={{ my: 2 }}>
-        {props.title ? props.title : "Talingchan Fertilizer"}
+        <Link href="/">
+          {props.title ? props.title : "Talingchan Fertilizer"}
+        </Link>
       </Typography>
       <Divider />
       <List>
@@ -77,7 +80,9 @@ const CustomAppBar: React.FC<appBarProps> = (props: appBarProps) => {
               variant="h6"
               component="div"
               sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-              onClick={()=>{router.push('/')}}
+              onClick={() => {
+                router.push("/");
+              }}
             >
               {props.title ? props.title : "Talingchan Fertilizer"}
             </Typography>
