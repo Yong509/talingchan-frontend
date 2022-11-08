@@ -23,6 +23,7 @@ import { render } from "react-dom";
 import { useForm } from "react-hook-form";
 import { CartModel } from "model/cart_model";
 import { BorderColor } from "@mui/icons-material";
+import Image from "next/image";
 
 interface productCardProps {
   product: ProductPayload;
@@ -78,12 +79,22 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
           }}
         >
           <Card elevation={3}>
-            <CardMedia
+            <div className="grid justify-items-center">
+              <Image
+                src={props.product.PPicture}
+                alt="product_image"
+                height={295}
+                width={320}
+                loading="eager"
+                quality={100}
+              />
+            </div>
+            {/* <CardMedia
               id="product_img"
               component="img"
               image={props.product.PPicture}
               sx={{ height: "295px", objectFit: "contain" }}
-            />
+            /> */}
             <Divider id="pic_detail_divider" sx={{ borderBottomWidth: 1 }} />
             <CardContent
               style={{
