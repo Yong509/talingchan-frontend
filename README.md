@@ -1,45 +1,50 @@
-```bash
-.
-├── components
-├── pages
-│   ├── _app.tsx            // root page
-│   └── index.ts            // index page (example)
-├── styles                  // css style
-├── public                  // assets (image, icons, ...)
-├── tsconfig.json           // typescript config file
+### Talingchun Fertitlizer Web Application
+____________
+
+Project ระบบการขายของร้านตลิ่งชันการเกษตร โดยพนักงานเป็นผู้ใช้ระบบ สามารถตรวจสอบการขายในเเต่ละวันได้ <br><br>
+รายชื่อสมาชิก
+ > 6310400916 เกริกวิทย์ ศุภวรรธนะกุล<br>
+ > 6310403991 ธนกฤต ขวัญแข<br>
+ > 6310401998 ศิวกร แพทย์เสลา<br>
+ > 6310401106 ภูมิรัฐ เลิบไธสง<br>
+ > 6310404024 ปัณณวิชญ์ พีรติยุทธ์<br>
+____________
+
+## คำแนะนำการใช้โปรแกรม<br>
+สามารถเข้าจาก [Talingchan Fertilizer](https://talingchan-frontend-mru34aermq-an.a.run.app/)<br>
+หรือ สามารถ clone และใช้คำสั่ง<br>
+
 ```
-
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
+npm i 
 npm run dev
-# or
-yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+_____
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## รายละเอียดเกี่ยวกับโปรเจค<br>
+- Product
+  - Personar
+      1. อัญชลี วันทา อายุ 35 ปี อาชีพ พนักงานขายร้านตลิ่งชันการเกษตร<br>
+        อัญชลีเป็นพนักงานหญิง เป็นพนักงานร้านตลิ่งชันมานานกว่า 5 ปี มีความสามารถในการเเนะนำสินค้าให้ลูกค้าตามที่ลูกค้าต้องการได้ ตรวจสอบรายการสินค้าที่ลูกค้าซื้อก่อนนำส่งมอบให้ลูกค้า <br>
+          - Desires/Behaviors 
+            - อยากจะทำงานได้รวดเร็วขึ้น
+            - อยากสามารถตรวจสอบคลังสินค้า/รายละเอียดสินค้า ได้โดยไม่ต้องถามเจ้าของร้าน
+            - อยากทราบราคาที่เป็นปัจจุบันของสินค้าได้ทันที
+          - Pain points
+            - ในหลายๆอย่างจำเป็นต้องถามเจ้าของร้านก่อน ซึ่งถ้าในเวลานั้นมีลูกค้าเยอะ หรือเจ้าของไม่ว่างก็ต้องรอให้เจ้าของร้านว่างก่อน เลยทำให้การขายล่าช้ากว่าที่ควรจะเป็น<br>
+      2. พิมนารา อายุ 55 ปี อาชีพ เจ้าของร้านตลิ่งชันการเกษตร<br>
+        พิมนาราเป็นเจ้าของร้านตลิ่งชันการเกษตร โดยเธอมีหน้าที่คอยตรวจรายรับในเเต่ละวันของร้านว่าสอดคล้องกับสินค้าที่ขายในเเต่ละวันหรือไม่, ตรวจสอบคลังสินค้า/บิล ด้วยภาระหน้าที่ของเจ้าของร้านที่มากมาย อาจทำให้การตรวจสอบคลังสินค้า หรือ ตรวจสอบบิลต่างๆ ผิดพลาดไปบ้าง  <br>
+          - Desires/Behaviors 
+            - อยากตรวจสอบคลังสินค้าได้โดยที่ไม่ต้องไปเดินนับทีละอย่าง
+            - เมื่อเวลาราคาสินค้าเกิดการเปลี่ยนแปลง เธออยากให้พนักงานในร้านทุกคนรับทราบและไม่ขายสินค้าให้ลูกค้าผิดราคา
+          - Pain points
+            - ในหลายๆอย่างจำเป็นต้องถามเจ้าของร้านก่อน ซึ่งถ้าในเวลานั้นมีลูกค้าเยอะ หรือเจ้าของไม่ว่างก็ต้องรอให้เจ้าของร้านว่างก่อน เลยทำให้การขายล่าช้ากว่าที่ควรจะเป็น หรือเมื่อต้องการเเจ้งรายละเอียดของสินค้าที่เปลี่ยนแปลงให้เเก่พนักงานขาย พนักงานขายอาจลืมบ้างต้องกลับมาถามใหม่
+            
+            
+  - Unit test ในโปรเจคใช้ Cypress ในการทำ unit test โดยจะเเบ่งเป็น 2 ส่วนคือ 
+      - Component test ใช้ในการ test component ที่ใช้เว็บเเอพลิเคชั่น เพื่อตรวจสอบการแสดงผลของ component ที่เราต้องการ
+      - E2E test ใช้ในการ  test Flow UI ของ Web เรา โดยที่ Flow นั้น จะเริ่มตั้งแต่จุดเริ่มต้น — ไปจนถึงจบ Flow ค่ะเพื่อให้แน่ใจว่าส่วนต่าง ๆ ที่เรา Develop ขึ้นมา สามารถทำงานได้อย่างถูกต้องและสมบูรณ์ที่สุด
+<br><br>
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Process<br>
+ [jira link](https://seprojectapp.atlassian.net/jira/software/projects/SHOP/boards/1)<br>
