@@ -256,27 +256,29 @@ const Report = (props: pageProps) => {
                 all pre-order & purchase invoice log , november 2022
               </h1>
               <div className="pt-20"></div>
-              <CustomTable
-                tableHead={[
-                  { title: "Invoice no", style: "" },
-                  { title: "Status", style: "" },
-                  { title: "Date", style: "" },
-                  { title: "Customer", style: "" },
-                  { title: "Employee", style: "" },
-                ]}
-                data={invoice.map((item) => {
-                  return [
-                    String(item.IID),
-                    String(item.IStatus),
-                    item.IDate,
-                    item.CNAME,
-                    item.ENAME,
-                  ];
-                })}
-                onOpen={(id, status) => {
-                  // handleClickReceive(id, status!);
-                }}
-              />
+              <div id="Invoice-table">
+                <CustomTable
+                  tableHead={[
+                    { title: "Invoice no", style: "" },
+                    { title: "Status", style: "" },
+                    { title: "Date", style: "" },
+                    { title: "Customer", style: "" },
+                    { title: "Employee", style: "" },
+                  ]}
+                  data={invoice.map((item) => {
+                    return [
+                      String(item.IID),
+                      String(item.IStatus),
+                      item.IDate,
+                      item.CNAME,
+                      item.ENAME,
+                    ];
+                  })}
+                  onOpen={(id, status) => {
+                    // handleClickReceive(id, status!);
+                  }}
+                />
+              </div>
             </Grid>
             <Grid item xs={1} sx={{ display: { xs: "none", md: "block" } }} />
           </Grid>
