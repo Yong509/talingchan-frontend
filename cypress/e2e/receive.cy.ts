@@ -22,7 +22,15 @@ describe("Receive page", () => {
     });
 
     it("should render correctly", () => {
-      for (let index = 0; index < preorderStatusLenght; index++) {}
+      cy.get("#Receive-table");
+    });
+
+    it("Table row should be clickable", () => {
+      cy.get("#table-cell-0").click();
+      cy.location("pathname", { timeout: 60000 }).should(
+        "include",
+        "/invoice/"
+      );
     });
   });
 });

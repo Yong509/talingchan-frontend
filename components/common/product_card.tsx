@@ -89,12 +89,6 @@ const ProductCard: React.FC<productCardProps> = (props: productCardProps) => {
                 quality={100}
               />
             </div>
-            {/* <CardMedia
-              id="product_img"
-              component="img"
-              image={props.product.PPicture}
-              sx={{ height: "295px", objectFit: "contain" }}
-            /> */}
             <Divider id="pic_detail_divider" sx={{ borderBottomWidth: 1 }} />
             <CardContent
               style={{

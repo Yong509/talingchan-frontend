@@ -303,7 +303,7 @@ const Receive = (props: pageProps) => {
             Receive
           </Typography>
           <div className="pt-24">
-            <div className=" md:px-24 px-4">
+            <div className=" md:px-24 px-4" id="Receive-table">
               <CustomTable
                 tableHead={[
                   { title: "Invoice no", style: "" },
