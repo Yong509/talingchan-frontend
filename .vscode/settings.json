@@ -1,5 +1,6 @@
 {
     "yaml.schemas": {
         "https://json.schemastore.org/github-workflow.json": "file:///Users/yong/Desktop/talingchan-frontend/.github/workflows/cloudbuild.yaml"
-    }
+    },
+    "highlight-matching-tag.customEmptyElements": null
 }

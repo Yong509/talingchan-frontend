@@ -2,6 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
+  images:{
+    domains: ['www.chiataigroup.com','drearth.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**",
+      },
+    ],
+  },
   env : {
     API_BASE_URL : process.env.API_BASE_URL
   },

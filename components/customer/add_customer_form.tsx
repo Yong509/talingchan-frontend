@@ -6,8 +6,10 @@ import { AccountCircle, ContactSupportOutlined } from "@mui/icons-material";
 import PhoneIcon from "@mui/icons-material/Phone";
 import { Customer } from "model/customer_model";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const AddCustomerForm: React.FC = () => {
+  const router = useRouter();
   const [value, setValue] = useState<string>();
   const {
     register,
@@ -29,6 +31,8 @@ const AddCustomerForm: React.FC = () => {
       .post(process.env.API_BASE_URL + "customers", customer)
       .then(function (response) {
         console.log(response.data);
+
+        router.push("/cart/");
       })
       .catch(function (error) {
         console.log(error);
@@ -39,11 +43,11 @@ const AddCustomerForm: React.FC = () => {
     setValue(e.value);
     console.log(customer);
 
-
     customer ? console.log("Pass") : console.log("Fail");
 
     // connect to db & set validation
     addCustomer();
+    // router.push("/cart/");
   }
 
   return (

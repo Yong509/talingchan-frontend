@@ -190,7 +190,7 @@ const CartIndexPage: NextPage<productProps> = ({ dataProduct }) => {
     let invoiceData: InvoiceCreateModel = {
       IStatus: "Preorder",
       CID: 0,
-      EmpID: 1,
+      EmpID: employee?.EmpID!,
     };
 
     let invoiceId: number = 0;
