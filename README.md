@@ -1,4 +1,5 @@
-### Talingchun Fertitlizer Web Application
+### Talingchun Fertitlizer Web Application 
+### กลุ่ม Sakoy Esan
 ____________
 
 Project ระบบการขายของร้านตลิ่งชันการเกษตร โดยพนักงานเป็นผู้ใช้ระบบ สามารถตรวจสอบการขายในเเต่ละวันได้ <br><br>
